@@ -6,55 +6,57 @@
 cxx_flags_by_compiler_frontend(MSVC _USE_MATH_DEFINES OUTPUT EXAMPLE_PRIVATE_DEFINITIONS)
 
 function(ADD_PINOCCHIO_CPP_EXAMPLE EXAMPLE)
-  set(options PARSERS CPPAD CPPADCG CASADI)
-  set(oneValueArgs)
-  set(multiValueArgs)
-  cmake_parse_arguments(example "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+  if(NOT BUILD_STANDALONE_PYTHON_INTERFACE)
+    set(options PARSERS CPPAD CPPADCG CASADI)
+    set(oneValueArgs)
+    set(multiValueArgs)
+    cmake_parse_arguments(example "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-  get_filename_component(EXAMPLE_NAME ${EXAMPLE} NAME)
-  set(EXAMPLE_NAME "${PROJECT_NAME}-example-cpp-${EXAMPLE_NAME}")
-  add_unit_test(${EXAMPLE_NAME} "${EXAMPLE}.cpp")
-  target_link_libraries(${EXAMPLE_NAME} PUBLIC ${PROJECT_NAME})
+    get_filename_component(EXAMPLE_NAME ${EXAMPLE} NAME)
+    set(EXAMPLE_NAME "${PROJECT_NAME}-example-cpp-${EXAMPLE_NAME}")
+    add_unit_test(${EXAMPLE_NAME} "${EXAMPLE}.cpp")
+    target_link_libraries(${EXAMPLE_NAME} PUBLIC ${PROJECT_NAME})
 
-  if(example_PARSERS)
-    target_link_libraries(${EXAMPLE_NAME} PUBLIC ${PROJECT_NAME}_parsers)
-  endif()
+    if(example_PARSERS)
+      target_link_libraries(${EXAMPLE_NAME} PUBLIC ${PROJECT_NAME}_parsers)
+    endif()
 
-  if(example_CPPAD)
-    target_link_libraries(${EXAMPLE_NAME} PUBLIC ${PROJECT_NAME}_cppad)
-  endif()
+    if(example_CPPAD)
+      target_link_libraries(${EXAMPLE_NAME} PUBLIC ${PROJECT_NAME}_cppad)
+    endif()
 
-  if(example_CPPADCG)
-    target_link_libraries(${EXAMPLE_NAME} PUBLIC ${PROJECT_NAME}_cppadcg)
-  endif()
+    if(example_CPPADCG)
+      target_link_libraries(${EXAMPLE_NAME} PUBLIC ${PROJECT_NAME}_cppadcg)
+    endif()
 
-  if(example_CASADI)
-    target_link_libraries(${EXAMPLE_NAME} PUBLIC ${PROJECT_NAME}_casadi)
-  endif()
+    if(example_CASADI)
+      target_link_libraries(${EXAMPLE_NAME} PUBLIC ${PROJECT_NAME}_casadi)
+    endif()
 
-  target_compile_definitions(${EXAMPLE_NAME} PRIVATE ${EXAMPLE_PRIVATE_DEFINITIONS}
-                                                     COAL_DISABLE_HPP_FCL_WARNINGS)
+    target_compile_definitions(${EXAMPLE_NAME} PRIVATE ${EXAMPLE_PRIVATE_DEFINITIONS}
+                                                       COAL_DISABLE_HPP_FCL_WARNINGS)
 
-  modernize_target_link_libraries(
-    ${EXAMPLE_NAME}
-    SCOPE PRIVATE
-    TARGETS Boost::filesystem
-    LIBRARIES ${Boost_FILESYSTEM_LIBRARY}}
-    INCLUDE_DIRS ${Boost_INCLUDE_DIRS})
+    modernize_target_link_libraries(
+      ${EXAMPLE_NAME}
+      SCOPE PRIVATE
+      TARGETS Boost::filesystem
+      LIBRARIES ${Boost_FILESYSTEM_LIBRARY}}
+      INCLUDE_DIRS ${Boost_INCLUDE_DIRS})
 
-  # There is no RPATH in Windows, then we must use the PATH to find the DLL
-  if(WIN32)
-    string(REPLACE ";" "\\\;" _PATH "$ENV{PATH}")
-    set(ENV_VARIABLES
-        "PATH=${_PATH}\\\;${PROJECT_BINARY_DIR}/src\\\;${PROJECT_BINARY_DIR}/bindings/python/pinocchio"
-    )
-    set_tests_properties(${EXAMPLE_NAME} PROPERTIES ENVIRONMENT "${ENV_VARIABLES}")
-  endif()
-  if(TARGET example-robot-data::example-robot-data)
-    target_link_libraries(${EXAMPLE_NAME} PRIVATE example-robot-data::example-robot-data)
-  else()
-    target_compile_definitions(
-      ${EXAMPLE_NAME} PRIVATE "EXAMPLE_ROBOT_DATA_MODEL_DIR=\"${EXAMPLE_ROBOT_DATA_MODEL_DIR}\"")
+    # There is no RPATH in Windows, then we must use the PATH to find the DLL
+    if(WIN32)
+      string(REPLACE ";" "\\\;" _PATH "$ENV{PATH}")
+      set(ENV_VARIABLES
+          "PATH=${_PATH}\\\;${PROJECT_BINARY_DIR}/src\\\;${PROJECT_BINARY_DIR}/bindings/python/pinocchio"
+      )
+      set_tests_properties(${EXAMPLE_NAME} PROPERTIES ENVIRONMENT "${ENV_VARIABLES}")
+    endif()
+    if(TARGET example-robot-data::example-robot-data)
+      target_link_libraries(${EXAMPLE_NAME} PRIVATE example-robot-data::example-robot-data)
+    else()
+      target_compile_definitions(
+        ${EXAMPLE_NAME} PRIVATE "EXAMPLE_ROBOT_DATA_MODEL_DIR=\"${EXAMPLE_ROBOT_DATA_MODEL_DIR}\"")
+    endif()
   endif()
 endfunction()
 
