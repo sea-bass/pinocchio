@@ -4,6 +4,10 @@
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    coal-src = {
+      url = "github:coal-library/coal";
+      flake = false;
+    };
   };
 
   outputs =
@@ -20,25 +24,31 @@
           devShells.default = pkgs.mkShell { inputsFrom = [ self'.packages.default ]; };
           packages = {
             default = self'.packages.pinocchio;
-            pinocchio = pkgs.python3Packages.pinocchio.overrideAttrs {
-              src = pkgs.lib.fileset.toSource {
-                root = ./.;
-                fileset = pkgs.lib.fileset.unions [
-                  ./benchmark
-                  ./bindings
-                  ./CMakeLists.txt
-                  ./doc
-                  ./examples
-                  ./include
-                  ./models
-                  ./package.xml
-                  ./sources.cmake
-                  ./src
-                  ./unittest
-                  ./utils
-                ];
-              };
-            };
+            coal = pkgs.coal.overrideAttrs (super: {
+              src = inputs.coal-src;
+              cmakeFlags = super.cmakeFlags ++ [ "-DCOAL_DISABLE_HPP_FCL_WARNINGS=ON" ];
+            });
+            pinocchio =
+              (pkgs.pinocchio.overrideAttrs (super: {
+                src = pkgs.lib.fileset.toSource {
+                  root = ./.;
+                  fileset = pkgs.lib.fileset.unions [
+                    ./benchmark
+                    ./bindings
+                    ./CMakeLists.txt
+                    ./doc
+                    ./examples
+                    ./include
+                    ./models
+                    ./package.xml
+                    ./sources.cmake
+                    ./src
+                    ./unittest
+                    ./utils
+                  ];
+                };
+              })).override
+                { inherit (self'.packages) coal; };
           };
         };
     };
