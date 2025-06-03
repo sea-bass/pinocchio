@@ -10,16 +10,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1748964262,
+        "lastModified": 1748966839,
         "narHash": "sha256-diQ2nZFxIgmLZHKK5bNMZnpfBk3qSecsUWHI0Dwj40E=",
-        "owner": "nim65s",
+        "owner": "coal-library",
         "repo": "coal",
-        "rev": "329add676d6f0c72282e4b055884dea09e0e2a95",
+        "rev": "7a14a4721681c07ffd38256c7ecedf46ce4a6d65",
         "type": "github"
       },
       "original": {
-        "owner": "nim65s",
-        "ref": "nix-warning",
+        "owner": "coal-library",
         "repo": "coal",
         "type": "github"
       }
