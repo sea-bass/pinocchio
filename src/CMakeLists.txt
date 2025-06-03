@@ -290,6 +290,7 @@ if(BUILD_WITH_PARSERS_SUPPORT)
   target_link_libraries(${PARSERS_LIB_NAME} PUBLIC ${PROJECT_NAME}_default)
   if(BUILD_WITH_HPP_FCL_SUPPORT)
     target_link_libraries(${PARSERS_LIB_NAME} PUBLIC ${PROJECT_NAME}_collision)
+    target_compile_definitions(${PARSERS_LIB_NAME} PRIVATE COAL_DISABLE_HPP_FCL_WARNINGS)
   endif()
 
   modernize_target_link_libraries(
@@ -371,6 +372,7 @@ if(BUILD_WITH_PYTHON_PARSER_SUPPORT)
   pinocchio_config(python_parser ${PYTHON_PARSER_LIB_NAME})
 
   target_link_libraries(${PYTHON_PARSER_LIB_NAME} PUBLIC ${PROJECT_NAME}_default Python3::Python)
+  target_compile_definitions(${PYTHON_PARSER_LIB_NAME} PRIVATE COAL_DISABLE_HPP_FCL_WARNINGS)
   target_link_boost_python(${PYTHON_PARSER_LIB_NAME} PUBLIC)
 endif()
 

@@ -32,8 +32,10 @@ function(ADD_PINOCCHIO_CPP_EXAMPLE EXAMPLE)
     target_link_libraries(${EXAMPLE_NAME} PUBLIC ${PROJECT_NAME}_casadi)
   endif()
 
-  target_compile_definitions(${EXAMPLE_NAME} PRIVATE ${EXAMPLE_PRIVATE_DEFINITIONS}
-                                                     PINOCCHIO_MODEL_DIR="${PINOCCHIO_MODEL_DIR}")
+  target_compile_definitions(
+    ${EXAMPLE_NAME}
+    PRIVATE ${EXAMPLE_PRIVATE_DEFINITIONS} PINOCCHIO_MODEL_DIR="${PINOCCHIO_MODEL_DIR}"
+            COAL_DISABLE_HPP_FCL_WARNINGS)
 
   # There is no RPATH in Windows, then we must use the PATH to find the DLL
   if(WIN32)

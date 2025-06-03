@@ -63,7 +63,8 @@ function(pinocchio_add_python_cpp_module name)
   endif()
 
   add_library(${target_name} MODULE ${_exclude} ${source_file})
-  target_compile_definitions(${target_name} PRIVATE EXT_MODULE_NAME=${module_name})
+  target_compile_definitions(${target_name} PRIVATE EXT_MODULE_NAME=${module_name}
+                                                    COAL_DISABLE_HPP_FCL_WARNINGS)
   target_link_libraries(${target_name} PRIVATE pinocchio_default eigenpy::eigenpy)
   foreach(_dep ${ARGS_PIN_TARGETS})
     target_link_libraries(${target_name} PRIVATE ${_dep})
