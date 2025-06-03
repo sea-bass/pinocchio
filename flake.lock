@@ -1,17 +1,25 @@
 {
   "nodes": {
-    "coal-src": {
-      "flake": false,
+    "coal": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1748963201,
-        "narHash": "sha256-JIujAp/keTkZu0Fs+ageZTBprRFxNHd3Qqz7bOJvYWY=",
-        "owner": "coal-library",
+        "lastModified": 1748964262,
+        "narHash": "sha256-diQ2nZFxIgmLZHKK5bNMZnpfBk3qSecsUWHI0Dwj40E=",
+        "owner": "nim65s",
         "repo": "coal",
-        "rev": "d64eb6c8a6c3daaaae40ab3f093fc4732bb3d3c1",
+        "rev": "329add676d6f0c72282e4b055884dea09e0e2a95",
         "type": "github"
       },
       "original": {
-        "owner": "coal-library",
+        "owner": "nim65s",
+        "ref": "nix-warning",
         "repo": "coal",
         "type": "github"
       }
@@ -67,7 +75,7 @@
     },
     "root": {
       "inputs": {
-        "coal-src": "coal-src",
+        "coal": "coal",
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs"
       }
