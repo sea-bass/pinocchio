@@ -1,28 +1,5 @@
 {
   "nodes": {
-    "coal": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1748966839,
-        "narHash": "sha256-diQ2nZFxIgmLZHKK5bNMZnpfBk3qSecsUWHI0Dwj40E=",
-        "owner": "coal-library",
-        "repo": "coal",
-        "rev": "7a14a4721681c07ffd38256c7ecedf46ce4a6d65",
-        "type": "github"
-      },
-      "original": {
-        "owner": "coal-library",
-        "repo": "coal",
-        "type": "github"
-      }
-    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -74,7 +51,6 @@
     },
     "root": {
       "inputs": {
-        "coal": "coal",
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs"
       }
