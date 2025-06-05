@@ -27,7 +27,7 @@ jobs:
 
   check:
     if: always()
-    name: check-nix
+    name: check-macos-linux-nix
 
     needs:
       - nix
