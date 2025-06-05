@@ -100,8 +100,9 @@ function(PINOCCHIO_PYTHON_BINDINGS_SPECIFIC_TYPE scalar_name)
       INCLUDE_DIRS ${console_bridge_INCLUDE_DIRS})
   endif()
   if(BUILD_WITH_HPP_FCL_SUPPORT)
-    target_compile_definitions(${PYTHON_LIB_NAME}
-                               PRIVATE -DPINOCCHIO_PYTHON_INTERFACE_WITH_HPP_FCL_PYTHON_BINDINGS)
+    target_compile_definitions(
+      ${PYTHON_LIB_NAME} PRIVATE PINOCCHIO_PYTHON_INTERFACE_WITH_HPP_FCL_PYTHON_BINDINGS
+                                 COAL_DISABLE_HPP_FCL_WARNINGS)
   endif()
   if(WIN32)
     target_link_libraries(${PYTHON_LIB_NAME} PUBLIC ${PYTHON_LIBRARY})

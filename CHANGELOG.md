@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
 - Check row dimensions of input Jacobians when computing kinematics Jacobian ([#2684](https://github.com/stack-of-tasks/pinocchio/pull/2684))
+
+### Changed
+- Disable coal/hpp-fcl warnings when building Pinocchio ([#2686](https://github.com/stack-of-tasks/pinocchio/pull/2686))
 
 ## [3.7.0] - 2025-05-21
 

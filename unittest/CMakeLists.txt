@@ -58,7 +58,7 @@ function(ADD_PINOCCHIO_UNIT_TEST name)
   target_compile_definitions(
     ${TEST_NAME}
     PRIVATE ${TEST_PRIVATE_DEFINITIONS} BOOST_TEST_DYN_LINK BOOST_TEST_MODULE=${MODULE_NAME}
-            PINOCCHIO_MODEL_DIR=\"${PINOCCHIO_MODEL_DIR}\")
+            PINOCCHIO_MODEL_DIR=\"${PINOCCHIO_MODEL_DIR}\" COAL_DISABLE_HPP_FCL_WARNINGS)
 
   # There is no RPATH in Windows, then we must use the PATH to find the DLL
   if(WIN32)

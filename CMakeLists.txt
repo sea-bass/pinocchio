@@ -330,6 +330,7 @@ else()
 endif()
 
 if(BUILD_WITH_HPP_FCL_SUPPORT)
+  set(COAL_DISABLE_HPP_FCL_WARNINGS ON)
   add_project_dependency(hpp-fcl REQUIRED)
 endif()
 
