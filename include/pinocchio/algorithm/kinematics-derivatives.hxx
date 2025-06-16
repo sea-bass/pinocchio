@@ -1,5 +1,6 @@
 //
-// Copyright (c) 2017-2020 CNRS INRIA
+// Copyright (c) 2017-2018 CNRS
+// Copyright (c) 2018-2025 INRIA
 //
 
 #ifndef __pinocchio_algorithm_kinematics_derivatives_hxx__
@@ -1089,12 +1090,15 @@ namespace pinocchio
     assert(model.check(data) && "data is not consistent with model.");
     assert(model.check(MimicChecker()) && "Function does not support mimic joints");
     assert(
-      joint_id < model.joints.size() && joint_id > 0
+      joint_id < model.joints.size()
       && "joint_id is outside the valid index for a joint in model.joints");
 
     typedef DataTpl<Scalar, Options, JointCollectionTpl> Data;
     typedef typename Data::SE3 SE3;
     typedef typename Data::Motion Motion;
+
+    if (joint_id == 0)
+      return;
 
     const typename Data::Matrix6x & J = data.J;
     const typename Data::Tensor3x & kinematic_hessians = data.kinematic_hessians;
