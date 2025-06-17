@@ -207,21 +207,21 @@ namespace pinocchio
 
       lastChild[parent] = std::max<int>(lastChild[(Index)i], lastChild[parent]);
 
-      // Build a "correct" representation of mimic nvSubtree by using nvExtended, which will cover
-      // its children nv, and allow for a simple check
+      // Build a "correct" representation of mimic nvSubtree by using idx_vExtended, which
+      // allows to compute the right value for nvSubtree when mimic is the last child
       if (boost::get<JointModelMimicTpl<Scalar, Options, JointCollectionTpl>>(
             &model.joints[size_t(i)]))
         nvSubtree[(Index)i] = 0;
       else
       {
-        int nv_;
+        int idx_v_;
         if (boost::get<JointModelMimicTpl<Scalar, Options, JointCollectionTpl>>(
               &model.joints[(Index)lastChild[(Index)i]]))
-          nv_ = model.joints[(Index)lastChild[(Index)i]].nvExtended();
+          idx_v_ = model.joints[(Index)lastChild[(Index)i]].idx_vExtended();
         else
-          nv_ = model.joints[(Index)lastChild[(Index)i]].nv();
+          idx_v_ = model.joints[(Index)lastChild[(Index)i]].idx_v();
         nvSubtree[(Index)i] =
-          model.joints[(Index)lastChild[(Index)i]].idx_v() + nv_ - model.joints[(Index)i].idx_v();
+          idx_v_ + model.joints[(Index)lastChild[(Index)i]].nv() - model.joints[(Index)i].idx_v();
       }
     }
     // fill mimic data
