@@ -8,7 +8,6 @@
 #include "pinocchio/multibody/model.hpp"
 #include "pinocchio/multibody/data.hpp"
 
-
 namespace pinocchio
 {
 
@@ -104,7 +103,7 @@ namespace pinocchio
     {
       JointIndex c = (JointIndex)data.lastChild[j];
       CHECK_DATA((int)c < model.njoints);
-      
+
       int nv = model.joints[j].nv();
       for (JointIndex d = j + 1; d <= c; ++d) // explore all descendant
       {
