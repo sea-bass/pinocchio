@@ -215,12 +215,16 @@ namespace pinocchio
     {
       const auto & mimicking_sub = model.subtrees[mimicking_id];
       size_t j = 1;
+      bool found = false;
       for (; j < mimicking_sub.size(); j++)
       {
         if (model.nvs[mimicking_sub[j]] != 0)
+        {
+          found = true;
           break;
+        }
       }
-      if (mimicking_sub.size() == 1)
+      if (mimicking_sub.size() == 1 || !found)
         mimic_subtree_joint.push_back(0);
       else
         mimic_subtree_joint.push_back(mimicking_sub[j]);
