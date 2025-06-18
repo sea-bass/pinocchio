@@ -69,7 +69,7 @@ namespace pinocchio
   , Ig(Inertia::Zero())
   , Fcrb((std::size_t)model.njoints, Matrix6x::Zero(6, model.nv))
   , lastChild((std::size_t)model.njoints, -1)
-  , nvSubtree((std::size_t)model.njoints, -1)
+  , nvSubtree((std::size_t)model.njoints, 0)
   , start_idx_v_fromRow((std::size_t)model.nvExtended, -1)
   , end_idx_v_fromRow((std::size_t)model.nvExtended, -1)
   , idx_vExtended_to_idx_v_fromRow((std::size_t)model.nvExtended, -1)
@@ -207,22 +207,8 @@ namespace pinocchio
 
       lastChild[parent] = std::max<int>(lastChild[(Index)i], lastChild[parent]);
 
-      // Build a "correct" representation of mimic nvSubtree by using idx_vExtended, which
-      // allows to compute the right value for nvSubtree when mimic is the last child
-      if (boost::get<JointModelMimicTpl<Scalar, Options, JointCollectionTpl>>(
-            &model.joints[size_t(i)]))
-        nvSubtree[(Index)i] = 0;
-      else
-      {
-        int idx_v_;
-        if (boost::get<JointModelMimicTpl<Scalar, Options, JointCollectionTpl>>(
-              &model.joints[(Index)lastChild[(Index)i]]))
-          idx_v_ = model.joints[(Index)lastChild[(Index)i]].idx_vExtended();
-        else
-          idx_v_ = model.joints[(Index)lastChild[(Index)i]].idx_v();
-        nvSubtree[(Index)i] =
-          idx_v_ + model.joints[(Index)lastChild[(Index)i]].nv() - model.joints[(Index)i].idx_v();
-      }
+      nvSubtree[(Index)i] += model.joints[(Index)i].nv();
+      nvSubtree[parent] += nvSubtree[(Index)i];
     }
     // fill mimic data
     for (const JointIndex mimicking_id : model.mimicking_joints)
