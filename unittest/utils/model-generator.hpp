@@ -125,7 +125,7 @@ namespace pinocchio
   class MimicTestCases
   {
   public:
-    static const int N_CASES = 6;
+    static const int N_CASES = 7;
 
     pinocchio::Model model_mimic;
     pinocchio::Model model_full;
@@ -218,6 +218,17 @@ namespace pinocchio
           std::cout << "Mimicking terminal joint";
         }
         mimicked_ids.push_back(model_full.getJointId("larm5_joint"));
+        mimicking_ids.push_back(model_full.getJointId("larm6_joint"));
+        ratios.push_back(2.5);
+        offsets.push_back(0.75);
+
+        break;
+      case 6:
+        if (verbose)
+        {
+          std::cout << "Mimicking terminal joint with primary not the direct parent";
+        }
+        mimicked_ids.push_back(model_full.getJointId("larm4_joint"));
         mimicking_ids.push_back(model_full.getJointId("larm6_joint"));
         ratios.push_back(2.5);
         offsets.push_back(0.75);
