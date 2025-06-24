@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix case joint_id == 0 in getJointKinematicHessian ([#2705](https://github.com/stack-of-tasks/pinocchio/pull/2705))
 - Fix nvSubtree computation in case a mimic joint is the last joint in the branch ([#2707](https://github.com/stack-of-tasks/pinocchio/pull/2707))
 - Fix `JointModelMimic::hasConfigurationLimit()` to return empty vector instead of delegating to mimicking joint ([#2715](https://github.com/stack-of-tasks/pinocchio/pull/2715))
+- Fix check mimic_subtree_joint ([#2716](https://github.com/stack-of-tasks/pinocchio/pull/2716))
+- Fix mimic patch for crba ([#2716](https://github.com/stack-of-tasks/pinocchio/pull/2716))
 
 ### Changed
 - Disable coal/hpp-fcl warnings when building Pinocchio ([#2686](https://github.com/stack-of-tasks/pinocchio/pull/2686))
