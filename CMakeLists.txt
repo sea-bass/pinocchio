@@ -155,7 +155,6 @@ if(APPLE)
 else(APPLE)
   set(BUILD_WITH_ACCELERATE_SUPPORT FALSE)
 endif(APPLE)
-option(GENERATE_PYTHON_STUBS "Generate the Python stubs associated to the Python library" OFF)
 
 option(INITIALIZE_WITH_NAN "Initialize Eigen entries with NaN" OFF)
 option(CHECK_RUNTIME_MALLOC "Check if some memory allocations are performed at runtime" OFF)
