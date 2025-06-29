@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Beta version of Viser visualizer ([#2718](https://github.com/stack-of-tasks/pinocchio/pull/2718))
+
 ### Fixed
 - Check row dimensions of input Jacobians when computing kinematics Jacobian ([#2684](https://github.com/stack-of-tasks/pinocchio/pull/2684))
 - Fix case joint_id == 0 in getJointKinematicHessian ([#2705](https://github.com/stack-of-tasks/pinocchio/pull/2705))

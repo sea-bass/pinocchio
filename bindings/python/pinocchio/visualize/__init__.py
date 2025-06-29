@@ -4,4 +4,5 @@ from .gepetto_visualizer import GepettoVisualizer
 from .meshcat_visualizer import MeshcatVisualizer
 from .panda3d_visualizer import Panda3dVisualizer
 from .rviz_visualizer import RVizVisualizer
+from .viser_visualizer import ViserVisualizer
 from .visualizers import Visualizer
