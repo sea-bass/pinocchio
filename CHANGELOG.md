@@ -28,7 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Convert configuration or tangent vector from two model with different root
   - [C++ example](./examples/model-configuration-converter.cpp)
   - [Python example](./examples/model-configuration-converter.py)
-- Fix Viser visualizer loading DAE files as trimesh.Scene ([#2748](https://github.com/stack-of-tasks/pinocchio/pull/2748))
+- CMake: Added support for `BUILD_STANDALONE_PYTHON_INTERFACE` ([#2714](https://github.com/stack-of-tasks/pinocchio/pull/2714))
 
 ### Fixed
 - Fixed explicit conversions to Scalar type in log.hxx ([#2730](https://github.com/stack-of-tasks/pinocchio/pull/2730))
@@ -41,6 +41,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix missing argument in exposeDelassus() pybind definition ([#2731](https://github.com/stack-of-tasks/pinocchio/pull/2731))
 - Fix copy of Model.armature in buidlReducedModel(...) ([#2749](https://github.com/stack-of-tasks/pinocchio/pull/2749))
 - Add site attached to a fixed body in MJCF parse ([#2754](https://github.com/stack-of-tasks/pinocchio/pull/2754))
+- Fix Viser visualizer loading DAE files as trimesh.Scene ([#2748](https://github.com/stack-of-tasks/pinocchio/pull/2748))
 
 ### Changed
 - Disable coal/hpp-fcl warnings when building Pinocchio ([#2686](https://github.com/stack-of-tasks/pinocchio/pull/2686))
