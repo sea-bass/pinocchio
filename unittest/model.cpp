@@ -1057,4 +1057,21 @@ BOOST_AUTO_TEST_CASE(test_mimicked_mimicking_vectors)
   }
 }
 
+BOOST_AUTO_TEST_CASE(test_has_configuration_limit_mimic)
+{
+  Model model;
+  // j1 -- j2
+  //    -- j3
+  // with j3 mimicking j2
+  model.addJoint(0, JointModelRX(), SE3::Identity(), "j1");
+  model.addJoint(1, JointModelRX(), SE3::Identity(), "j2");
+  model.addJoint(
+    2, JointModelMimic(JointModelRX(), model.joints[1], 1., 0.), SE3::Identity(), "j3");
+
+  BOOST_CHECK_EQUAL(model.lowerPositionLimit.size(), 2);
+  BOOST_CHECK_EQUAL(model.upperPositionLimit.size(), 2);
+  BOOST_CHECK_EQUAL(model.hasConfigurationLimit().size(), 2);
+  BOOST_CHECK_EQUAL(model.hasConfigurationLimitInTangent().size(), 2);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
