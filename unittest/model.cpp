@@ -1071,6 +1071,7 @@ BOOST_AUTO_TEST_CASE(test_has_configuration_limit_mimic)
   BOOST_CHECK_EQUAL(model.lowerPositionLimit.size(), 2);
   BOOST_CHECK_EQUAL(model.upperPositionLimit.size(), 2);
   BOOST_CHECK_EQUAL(model.hasConfigurationLimit().size(), 2);
+  BOOST_CHECK_EQUAL(model.hasConfigurationLimitInTangent().size(), 2);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
