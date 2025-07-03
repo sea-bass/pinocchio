@@ -122,14 +122,12 @@ You can also consider the interactive Jupyter notebook [set of tutorials](https:
   <table class="center">
    <!-- <tr> <td> Continuous Integration </td></tr>-->
   <tr><td> CI on ROS </td>
-  <td><a href="https://github.com/stack-of-tasks/pinocchio/actions/workflows/ros-ci.yml"><img alt="ROS" src="https://github.com/stack-of-tasks/pinocchio/actions/workflows/ros-ci.yml/badge.svg?branch=devel" /></a></td>
+  <td><a href="https://github.com/stack-of-tasks/pinocchio/actions/workflows/ros_ci.yml"><img alt="ROS" src="https://github.com/stack-of-tasks/pinocchio/actions/workflows/ros_ci.yml/badge.svg?branch=devel" /></a></td>
     </tr><tr><td> CI on Linux via APT </td>
   <td><a href="https://github.com/stack-of-tasks/pinocchio/actions/workflows/linux.yml"><img alt="linux" src="https://github.com/stack-of-tasks/pinocchio/actions/workflows/linux.yml/badge.svg?branch=devel" /></a></td>
-    </tr><tr><td> CI on OSX via Conda </td>
-  <td><a href="https://github.com/stack-of-tasks/pinocchio/actions/workflows/macos-linux-conda.yml"><img alt="mac" src="https://github.com/stack-of-tasks/pinocchio/actions/workflows/macos-linux-conda.yml/badge.svg?branch=devel" /></a></td>
-    </tr><tr><td> CI on Windows via Conda </td>
-  <td><a href="https://github.com/stack-of-tasks/pinocchio/actions/workflows/windows-conda.yml"><img alt="windows" src="https://github.com/stack-of-tasks/pinocchio/actions/workflows/windows-conda.yml/badge.svg?branch=devel" /></a></td>
-  </tr><tr><td> CI on Linux via Robotpkg </td>
+    </tr><tr><td> CI on macOS and Windows via Pixi </td>
+  <td><a href="https://github.com/stack-of-tasks/pinocchio/actions/workflows/macos-linux-windows-pixi.yml"><img alt="mac" src="https://github.com/stack-of-tasks/pinocchio/actions/workflows/macos-linux-windows-pixi.yml/badge.svg?branch=devel" /></a></td>
+    </tr><tr><td> CI on Linux via Robotpkg </td>
     <td><img src="https://gitlab.laas.fr/stack-of-tasks/pinocchio/badges/devel/pipeline.svg" alt="Pipeline Status"></td>
    </tr>
   </table>
