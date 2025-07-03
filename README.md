@@ -122,14 +122,12 @@ You can also consider the interactive Jupyter notebook [set of tutorials](https:
   <table class="center">
    <!-- <tr> <td> Continuous Integration </td></tr>-->
   <tr><td> CI on ROS </td>
-  <td><a href="https://github.com/stack-of-tasks/pinocchio/actions/workflows/ros-ci.yml"><img alt="ROS" src="https://github.com/stack-of-tasks/pinocchio/actions/workflows/ros-ci.yml/badge.svg?branch=devel" /></a></td>
+  <td><a href="https://github.com/stack-of-tasks/pinocchio/actions/workflows/ros_ci.yml"><img alt="ROS" src="https://github.com/stack-of-tasks/pinocchio/actions/workflows/ros_ci.yml/badge.svg?branch=devel" /></a></td>
     </tr><tr><td> CI on Linux via APT </td>
   <td><a href="https://github.com/stack-of-tasks/pinocchio/actions/workflows/linux.yml"><img alt="linux" src="https://github.com/stack-of-tasks/pinocchio/actions/workflows/linux.yml/badge.svg?branch=devel" /></a></td>
-    </tr><tr><td> CI on OSX via Conda </td>
-  <td><a href="https://github.com/stack-of-tasks/pinocchio/actions/workflows/macos-linux-conda.yml"><img alt="mac" src="https://github.com/stack-of-tasks/pinocchio/actions/workflows/macos-linux-conda.yml/badge.svg?branch=devel" /></a></td>
-    </tr><tr><td> CI on Windows via Conda </td>
-  <td><a href="https://github.com/stack-of-tasks/pinocchio/actions/workflows/windows-conda.yml"><img alt="windows" src="https://github.com/stack-of-tasks/pinocchio/actions/workflows/windows-conda.yml/badge.svg?branch=devel" /></a></td>
-  </tr><tr><td> CI on Linux via Robotpkg </td>
+    </tr><tr><td> CI on macOS and Windows via Pixi </td>
+  <td><a href="https://github.com/stack-of-tasks/pinocchio/actions/workflows/macos-linux-windows-pixi.yml"><img alt="mac" src="https://github.com/stack-of-tasks/pinocchio/actions/workflows/macos-linux-windows-pixi.yml/badge.svg?branch=devel" /></a></td>
+    </tr><tr><td> CI on Linux via Robotpkg </td>
     <td><img src="https://gitlab.laas.fr/stack-of-tasks/pinocchio/badges/devel/pipeline.svg" alt="Pipeline Status"></td>
    </tr>
   </table>
@@ -175,25 +173,23 @@ Here, you can install Pinocchio using:
 sudo apt install ros-$ROS_DISTRO-pinocchio
 ```
 
-This installs Pinocchio with HPP-FCL support and with Python bindings.
+This installs Pinocchio with Coal support for collision checking and with Python bindings.
 You can then use Pinocchio in your ROS packages by:
 
 * Depending on Pinocchio in your `package.xml` config (`<depend>pinocchio</depend>`)
 * Including Pinocchio via CMake (`find_package(pinocchio REQUIRED)`) and linking against Pinocchio (`target_link_libraries(my_library pinocchio::pinocchio)`)
 
-We include support and hooks to discover the package for both ROS 1 and ROS 2.
-Examples can be found at the following repositories:
-* [ROS 1 example](https://github.com/wxmerkt/pinocchio_ros_example)
-* [ROS 2 example](https://github.com/sea-bass/pinocchio_ros_cpp_example)
+We include support and hooks to discover the package for ROS build systems.
+A ROS 2 example can be found in [this repository](https://github.com/sea-bass/pinocchio_ros_cpp_example).
 
 Please note that we always advise including the `pinocchio/fwd.hpp` header as the first include to avoid compilation errors from differing Boost-variant sizes.
 
-| ROS 1       |                                                                                                                                                                            | &nbsp;&nbsp;&nbsp;&nbsp; | ROS 2        |                                                                                                                                                                            |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Melodic** | [![](https://build.ros.org/job/Mbin_uB64__pinocchio__ubuntu_bionic_amd64__binary/badge/icon)](https://build.ros.org/job/Mbin_uB64__pinocchio__ubuntu_bionic_amd64__binary) | &nbsp;&nbsp;&nbsp;&nbsp; | **Foxy**     | [![](https://build.ros2.org/job/Fbin_uF64__pinocchio__ubuntu_focal_amd64__binary/badge/icon)](https://build.ros2.org/job/Fbin_uF64__pinocchio__ubuntu_focal_amd64__binary) |
-| **Noetic**  | [![](https://build.ros.org/job/Nbin_uF64__pinocchio__ubuntu_focal_amd64__binary/badge/icon)](https://build.ros.org/job/Nbin_uF64__pinocchio__ubuntu_focal_amd64__binary)   | &nbsp;&nbsp;&nbsp;&nbsp; | **Galactic** | [![](https://build.ros2.org/job/Gbin_uF64__pinocchio__ubuntu_focal_amd64__binary/badge/icon)](https://build.ros2.org/job/Gbin_uF64__pinocchio__ubuntu_focal_amd64__binary) |
-|             |                                                                                                                                                                            | &nbsp;&nbsp;&nbsp;&nbsp; | **Humble**   | [![](https://build.ros2.org/job/Hbin_uJ64__pinocchio__ubuntu_jammy_amd64__binary/badge/icon)](https://build.ros2.org/job/Hbin_uJ64__pinocchio__ubuntu_jammy_amd64__binary) |
-|             |                                                                                                                                                                            | &nbsp;&nbsp;&nbsp;&nbsp; | **Rolling**  | [![](https://build.ros2.org/job/Rbin_uJ64__pinocchio__ubuntu_jammy_amd64__binary/badge/icon)](https://build.ros2.org/job/Rbin_uJ64__pinocchio__ubuntu_jammy_amd64__binary) |
+| ROS 2 Distro  | Build Status                                                                                                                                                               |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Humble**    | [![](https://build.ros2.org/job/Hbin_uJ64__pinocchio__ubuntu_jammy_amd64__binary/badge/icon)](https://build.ros2.org/job/Hbin_uJ64__pinocchio__ubuntu_jammy_amd64__binary) |
+| **Jazzy**     | [![](https://build.ros2.org/job/Jbin_uN64__pinocchio__ubuntu_noble_amd64__binary/badge/icon)](https://build.ros2.org/job/Jbin_uN64__pinocchio__ubuntu_noble_amd64__binary) |
+| **Kilted**    | [![](https://build.ros2.org/job/Kbin_uN64__pinocchio__ubuntu_noble_amd64__binary/badge/icon)](https://build.ros2.org/job/Kbin_uN64__pinocchio__ubuntu_noble_amd64__binary) |
+| **Rolling**   | [![](https://build.ros2.org/job/Rbin_uN64__pinocchio__ubuntu_noble_amd64__binary/badge/icon)](https://build.ros2.org/job/Rbin_uN64__pinocchio__ubuntu_noble_amd64__binary) |
 
 ## Visualization
 
