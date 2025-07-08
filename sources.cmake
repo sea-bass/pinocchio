@@ -358,7 +358,9 @@ set(${PROJECT_NAME}_PARSERS_PUBLIC_HEADERS
     ${PROJECT_SOURCE_DIR}/include/pinocchio/parsers/graph/graph-visitor.hpp
     ${PROJECT_SOURCE_DIR}/include/pinocchio/parsers/graph/joints.hpp
     ${PROJECT_SOURCE_DIR}/include/pinocchio/parsers/graph/frames.hpp
-    ${PROJECT_SOURCE_DIR}/include/pinocchio/parsers/graph/geometries.hpp)
+    ${PROJECT_SOURCE_DIR}/include/pinocchio/parsers/graph/geometries.hpp
+    ${PROJECT_SOURCE_DIR}/include/pinocchio/parsers/graph/model-configuration-converter.hpp
+    ${PROJECT_SOURCE_DIR}/include/pinocchio/parsers/graph/model-configuration-converter.hxx)
 
 set(${PROJECT_NAME}_GRAPH_GEOMETRY_HEADERS
     ${PROJECT_SOURCE_DIR}/include/pinocchio/parsers/graph/model-graph-algo-geometry.hpp)
@@ -547,6 +549,7 @@ set(${PROJECT_NAME}_BINDINGS_PYTHON_PUBLIC_HEADERS
     ${PROJECT_SOURCE_DIR}/include/pinocchio/bindings/python/parsers/mjcf.hpp
     ${PROJECT_SOURCE_DIR}/include/pinocchio/bindings/python/parsers/srdf.hpp
     ${PROJECT_SOURCE_DIR}/include/pinocchio/bindings/python/parsers/model-graph.hpp
+    ${PROJECT_SOURCE_DIR}/include/pinocchio/bindings/python/parsers/graph/model-configuration-converter.hpp
     ${PROJECT_SOURCE_DIR}/include/pinocchio/bindings/python/extra/extras.hpp
     ${PROJECT_SOURCE_DIR}/include/pinocchio/bindings/python/visualizers/visualizer-visitor.hpp)
 
@@ -624,6 +627,7 @@ set(${PROJECT_NAME}_BINDINGS_PYTHON_SOURCES
     ${PROJECT_SOURCE_DIR}/bindings/python/parsers/graph/expose-geometries.cpp
     ${PROJECT_SOURCE_DIR}/bindings/python/parsers/graph/expose-model-graph-algo.cpp
     ${PROJECT_SOURCE_DIR}/bindings/python/parsers/graph/expose-model-graph.cpp
+    ${PROJECT_SOURCE_DIR}/bindings/python/parsers/graph/expose-model-configuration-converter.cpp
     ${PROJECT_SOURCE_DIR}/bindings/python/extra/expose-extras.cpp)
 
 set(${PROJECT_NAME}_BINDINGS_GRAPH_GEOMETRY_SOURCES

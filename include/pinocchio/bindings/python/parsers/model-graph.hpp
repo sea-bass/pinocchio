@@ -31,6 +31,8 @@ namespace pinocchio
 
     void exposeAlgoGeometry();
 
+    void exposeModelConfigurationConverter();
+
     inline void exposeGraph()
     {
       boost::python::scope graph = boost::python::class_<GraphNamespace<context::Scalar>>("graph");
@@ -49,6 +51,7 @@ namespace pinocchio
       exposeAlgoGeometry();
   #endif // if defined(PINOCCHIO_WITH_HPP_FCL)
 #endif   // if defined(PINOCCHIO_PYTHON_INTERFACE_MAIN_MODULE)
+      exposeModelConfigurationConverter();
     }
 
   } // namespace python
