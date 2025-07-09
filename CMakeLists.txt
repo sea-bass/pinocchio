@@ -522,7 +522,4 @@ endforeach()
 pkg_config_append_cflags("${CFLAGS_DEPENDENCIES}")
 pkg_config_append_cflags("${CFLAGS_OPTIONS}")
 
-# Install catkin package.xml
-install(FILES package.xml DESTINATION share/${PROJECT_NAME})
-
 setup_project_finalize()
