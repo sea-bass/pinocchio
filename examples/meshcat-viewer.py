@@ -2,8 +2,9 @@
 # Note: this feature requires Meshcat to be installed, this can be done using
 # pip install --user meshcat
 
-import sys
+import os
 from pathlib import Path
+import sys
 
 import numpy as np
 import pinocchio as pin
@@ -11,10 +12,9 @@ from pinocchio.visualize import MeshcatVisualizer
 
 # Load the URDF model.
 # Conversion with str seems to be necessary when executing this file with ipython
-pinocchio_model_dir = Path(__file__).parent.parent / "models"
 
-model_path = pinocchio_model_dir / "example-robot-data/robots"
-mesh_dir = pinocchio_model_dir
+model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR").strip('"'))
+mesh_dir = model_path.parent.parent
 # urdf_filename = "talos_reduced.urdf"
 # urdf_model_path = join(join(model_path,"talos_data/robots"),urdf_filename)
 urdf_filename = "solo.urdf"

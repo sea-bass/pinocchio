@@ -124,6 +124,12 @@ function(ADD_PINOCCHIO_UNIT_TEST name)
   if(PKGS)
     target_link_libraries(${TEST_NAME} PRIVATE ${PKGS})
   endif()
+  if(TARGET example-robot-data::example-robot-data)
+    target_link_libraries(${TEST_NAME} PRIVATE example-robot-data::example-robot-data)
+  else()
+    target_compile_definitions(
+      ${TEST_NAME} PRIVATE "EXAMPLE_ROBOT_DATA_MODEL_DIR=${EXAMPLE_ROBOT_DATA_MODEL_DIR}")
+  endif()
 endfunction()
 
 macro(ADD_PINOCCHIO_PARALLEL_UNIT_TEST NAME)

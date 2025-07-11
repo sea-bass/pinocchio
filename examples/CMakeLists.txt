@@ -45,6 +45,12 @@ function(ADD_PINOCCHIO_CPP_EXAMPLE EXAMPLE)
     )
     set_tests_properties(${EXAMPLE_NAME} PROPERTIES ENVIRONMENT "${ENV_VARIABLES}")
   endif()
+  if(TARGET example-robot-data::example-robot-data)
+    target_link_libraries(${EXAMPLE_NAME} PRIVATE example-robot-data::example-robot-data)
+  else()
+    target_compile_definitions(
+      ${EXAMPLE_NAME} PRIVATE "EXAMPLE_ROBOT_DATA_MODEL_DIR=${EXAMPLE_ROBOT_DATA_MODEL_DIR}")
+  endif()
 endfunction()
 
 add_pinocchio_cpp_example(inverse-kinematics)
@@ -113,6 +119,11 @@ if(BUILD_PYTHON_INTERFACE)
   foreach(EXAMPLE ${${PROJECT_NAME}_PYTHON_EXAMPLES})
     set(EXAMPLE_NAME "${PROJECT_NAME}-example-py-${EXAMPLE}")
     add_python_unit_test("${EXAMPLE_NAME}" "examples/${EXAMPLE}.py" "bindings/python")
+    get_test_property(${EXAMPLE_NAME} ENVIRONMENT _ENVIRONMENT)
+    set_tests_properties(
+      "${EXAMPLE_NAME}"
+      PROPERTIES ENVIRONMENT
+                 "${_ENVIRONMENT};EXAMPLE_ROBOT_DATA_MODEL_DIR=${EXAMPLE_ROBOT_DATA_MODEL_DIR}")
     add_windows_dll_path_to_test(${EXAMPLE_NAME})
   endforeach()
 endif()

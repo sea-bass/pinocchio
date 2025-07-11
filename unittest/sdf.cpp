@@ -16,8 +16,7 @@ BOOST_AUTO_TEST_SUITE(BOOST_TEST_MODULE)
 BOOST_AUTO_TEST_CASE(build_model)
 {
   const std::string filename =
-    PINOCCHIO_MODEL_DIR
-    + std::string("/example-robot-data/robots/cassie_description/robots/cassie.sdf");
+    EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/cassie_description/robots/cassie.sdf");
   const std::string dir = PINOCCHIO_MODEL_DIR;
 
   pinocchio::Model model;
@@ -34,8 +33,7 @@ BOOST_AUTO_TEST_CASE(build_model_with_joint)
 {
 
   const std::string filename =
-    PINOCCHIO_MODEL_DIR
-    + std::string("/example-robot-data/robots/cassie_description/robots/cassie.sdf");
+    EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/cassie_description/robots/cassie.sdf");
   const std::string dir = PINOCCHIO_MODEL_DIR;
   const std::string rootLinkName = "pelvis";
   pinocchio::Model model;
@@ -52,8 +50,7 @@ BOOST_AUTO_TEST_CASE(build_model_without_rootLink)
 {
 
   const std::string filename =
-    PINOCCHIO_MODEL_DIR
-    + std::string("/example-robot-data/robots/cassie_description/robots/cassie.sdf");
+    EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/cassie_description/robots/cassie.sdf");
   const std::string dir = PINOCCHIO_MODEL_DIR;
   const std::string rootLinkName = "";
   pinocchio::Model model;

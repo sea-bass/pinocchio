@@ -28,8 +28,7 @@ BOOST_AUTO_TEST_SUITE(BOOST_TEST_MODULE)
 BOOST_AUTO_TEST_CASE(test_geometry_pool)
 {
   const std::string filename =
-    PINOCCHIO_MODEL_DIR
-    + std::string("/example-robot-data/robots/talos_data/robots/talos_reduced.urdf");
+    EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/talos_data/robots/talos_reduced.urdf");
 
   pinocchio::Model model;
   pinocchio::urdf::buildModel(filename, JointModelFreeFlyer(), model);
@@ -38,7 +37,7 @@ BOOST_AUTO_TEST_CASE(test_geometry_pool)
   const std::string package_path = PINOCCHIO_MODEL_DIR;
   hpp::fcl::MeshLoaderPtr mesh_loader = std::make_shared<hpp::fcl::CachedMeshLoader>();
   const std::string srdf_filename =
-    PINOCCHIO_MODEL_DIR + std::string("/example-robot-data/robots/talos_data/srdf/talos.srdf");
+    EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/talos_data/srdf/talos.srdf");
   std::vector<std::string> package_paths(1, package_path);
   pinocchio::GeometryModel geometry_model;
   pinocchio::urdf::buildGeom(
@@ -209,8 +208,7 @@ BOOST_AUTO_TEST_CASE(test_broadphase_pool)
 BOOST_AUTO_TEST_CASE(test_talos)
 {
   const std::string filename =
-    PINOCCHIO_MODEL_DIR
-    + std::string("/example-robot-data/robots/talos_data/robots/talos_reduced.urdf");
+    EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/talos_data/robots/talos_reduced.urdf");
 
   pinocchio::Model model;
   pinocchio::urdf::buildModel(filename, JointModelFreeFlyer(), model);
@@ -219,7 +217,7 @@ BOOST_AUTO_TEST_CASE(test_talos)
   const std::string package_path = PINOCCHIO_MODEL_DIR;
   hpp::fcl::MeshLoaderPtr mesh_loader = std::make_shared<hpp::fcl::CachedMeshLoader>();
   const std::string srdf_filename =
-    PINOCCHIO_MODEL_DIR + std::string("/example-robot-data/robots/talos_data/srdf/talos.srdf");
+    EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/talos_data/srdf/talos.srdf");
   std::vector<std::string> package_paths(1, package_path);
   pinocchio::GeometryModel geometry_model;
   pinocchio::urdf::buildGeom(
@@ -287,8 +285,7 @@ BOOST_AUTO_TEST_CASE(test_talos)
 BOOST_AUTO_TEST_CASE(test_pool_talos_memory)
 {
   const std::string filename =
-    PINOCCHIO_MODEL_DIR
-    + std::string("/example-robot-data/robots/talos_data/robots/talos_reduced.urdf");
+    EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/talos_data/robots/talos_reduced.urdf");
 
   pinocchio::Model * model_ptr = new Model();
   Model & model = *model_ptr;
@@ -298,7 +295,7 @@ BOOST_AUTO_TEST_CASE(test_pool_talos_memory)
   const std::string package_path = PINOCCHIO_MODEL_DIR;
   hpp::fcl::MeshLoaderPtr mesh_loader = std::make_shared<hpp::fcl::CachedMeshLoader>();
   const std::string srdf_filename =
-    PINOCCHIO_MODEL_DIR + std::string("/example-robot-data/robots/talos_data/srdf/talos.srdf");
+    EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/talos_data/srdf/talos.srdf");
   std::vector<std::string> package_paths(1, package_path);
   pinocchio::GeometryModel * geometry_model_ptr = new GeometryModel();
   GeometryModel & geometry_model = *geometry_model_ptr;
@@ -333,8 +330,7 @@ BOOST_AUTO_TEST_CASE(test_pool_talos_memory)
 BOOST_AUTO_TEST_CASE(test_pool_talos)
 {
   const std::string filename =
-    PINOCCHIO_MODEL_DIR
-    + std::string("/example-robot-data/robots/talos_data/robots/talos_reduced.urdf");
+    EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/talos_data/robots/talos_reduced.urdf");
 
   pinocchio::Model model;
   pinocchio::urdf::buildModel(filename, JointModelFreeFlyer(), model);
@@ -343,7 +339,7 @@ BOOST_AUTO_TEST_CASE(test_pool_talos)
   const std::string package_path = PINOCCHIO_MODEL_DIR;
   hpp::fcl::MeshLoaderPtr mesh_loader = std::make_shared<hpp::fcl::CachedMeshLoader>();
   const std::string srdf_filename =
-    PINOCCHIO_MODEL_DIR + std::string("/example-robot-data/robots/talos_data/srdf/talos.srdf");
+    EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/talos_data/srdf/talos.srdf");
   std::vector<std::string> package_paths(1, package_path);
   pinocchio::GeometryModel geometry_model;
   pinocchio::urdf::buildGeom(

@@ -1,4 +1,4 @@
-import sys
+import os
 from pathlib import Path
 
 import casadi
@@ -6,11 +6,6 @@ import numpy as np
 import pinocchio as pin
 import pinocchio.casadi as cpin
 
-# This use the example-robot-data submodule, but if you have it already properly
-# installed in your PYTHONPATH, there is no need for this sys.path thing
-path = Path(__file__).parent.parent.parent / "models" / "example-robot-data" / "python"
-sys.path.append(str(path))
-import example_robot_data  # noqa: E402
 
 # Problem parameters
 x_goal = [1, 0, 1.5, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
@@ -257,8 +252,12 @@ class OptimalControlProblem:
 
 
 def main():
-    robot = example_robot_data.load("hector")
-    model = robot.model
+    model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR").strip('"'))
+    mesh_dir = model_path.parent.parent
+    urdf_filename = model_path / "hector_description/robots/quadrotor_base.urdf"
+    model = pin.robot_wrapper.RobotWrapper.BuildFromURDF(
+        urdf_filename, mesh_dir, pin.JointModelFreeFlyer()
+    ).model
 
     oc_problem = OptimalControlProblem(model, terminal_soft_constraint=False)
 
@@ -289,8 +288,7 @@ def main():
             "Error while initializing the viewer. "
             "It seems you should install Python meshcat"
         )
-        print(err)
-        sys.exit(0)
+        raise err
 
 
 if __name__ == "__main__":
