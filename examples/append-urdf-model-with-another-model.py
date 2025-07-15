@@ -1,8 +1,8 @@
 import math
 import os
-from pathlib import Path
 import sys
 import time
+from pathlib import Path
 
 import hppfcl as fcl
 import numpy as np

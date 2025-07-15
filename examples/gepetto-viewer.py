@@ -1,8 +1,8 @@
 # NOTE: this example needs gepetto-gui to be installed
 # usage: launch gepetto-gui and then run this test
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 import pinocchio as pin

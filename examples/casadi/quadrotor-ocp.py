@@ -6,7 +6,6 @@ import numpy as np
 import pinocchio as pin
 import pinocchio.casadi as cpin
 
-
 # Problem parameters
 x_goal = [1, 0, 1.5, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
 x0 = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]

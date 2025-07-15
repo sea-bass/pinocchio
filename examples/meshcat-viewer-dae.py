@@ -3,8 +3,8 @@
 # pip install --user meshcat
 
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import numpy as np
 import pinocchio as pin
