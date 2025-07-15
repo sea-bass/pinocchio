@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - Disable coal/hpp-fcl warnings when building Pinocchio ([#2686](https://github.com/stack-of-tasks/pinocchio/pull/2686))
+- CMake: allow use of system example-robot-data ([#2728](https://github.com/stack-of-tasks/pinocchio/pull/2728))
 
 ## [3.7.0] - 2025-05-21
 
