@@ -157,8 +157,8 @@ namespace pinocchio
           if (model.nvs[mimicking_sub[j]] != 0)
           {
             id_subtree = mimicking_sub[j];
+            break;
           }
-          break;
         }
         CHECK_DATA(id_subtree == data.mimic_subtree_joint[k]);
       }
