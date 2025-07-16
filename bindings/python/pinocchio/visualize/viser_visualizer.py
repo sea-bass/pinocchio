@@ -199,21 +199,55 @@ class ViserVisualizer(BaseVisualizer):
                 opacity=color_override[3],
             )
         elif isinstance(geom, MESH_TYPES):
-            mesh = trimesh.load(geometry_object.meshPath)
-            if color is None:
-                frame = self.viewer.scene.add_mesh_trimesh(name, mesh)
+            frame = self._add_mesh_from_path(name, geometry_object.meshPath, color_override)
+        elif isinstance(geom, hppfcl.Convex):
+            if len(geometry_object.meshPath) > 0:
+                frame = self._add_mesh_from_path(name, geometry_object.meshPath, color_override)
             else:
-                frame = self.viewer.scene.add_mesh_simple(
-                    name,
-                    mesh.vertices,
-                    mesh.faces,
-                    color=color_override[:3],
-                    opacity=color_override[3],
-                )
+                frame = self._add_mesh_from_convex(name, geom, color_override)
         else:
             raise RuntimeError(f"Unsupported geometry type for {name}: {type(geom)}")
 
         self.frames[name] = frame
+
+    def _add_mesh_from_path(self, name, mesh_path, color):
+        """
+        Load a mesh from a file.
+        """
+        mesh = trimesh.load(mesh_path)
+        if color is None:
+            return self.viewer.scene.add_mesh_trimesh(name, mesh)
+        else:
+            return self.viewer.scene.add_mesh_simple(
+                name,
+                mesh.vertices,
+                mesh.faces,
+                color=color[:3],
+                opacity=color[3],
+            )
+
+    def _add_mesh_from_convex(self, name, geom, color):
+        """
+        Load a mesh from triangles stored inside a hppfcl.Convex.
+        """
+        num_tris = geom.num_polygons
+        call_triangles = geom.polygons
+        call_vertices = geom.points
+
+        vertices = call_vertices()
+        vertices = vertices.astype(np.float32)
+        faces = np.empty((num_tris, 3), dtype=int)
+        for k in range(num_tris):
+            tri = call_triangles(k)
+            faces[k] = [tri[i] for i in range(3)]
+
+        return self.viewer.scene.add_mesh_simple(
+            name,
+            vertices,
+            faces,
+            color=color[:3],
+            opacity=color[3],
+        )
 
     def display(self, q=None):
         """
