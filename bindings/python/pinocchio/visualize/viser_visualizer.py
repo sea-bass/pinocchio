@@ -199,10 +199,14 @@ class ViserVisualizer(BaseVisualizer):
                 opacity=color_override[3],
             )
         elif isinstance(geom, MESH_TYPES):
-            frame = self._add_mesh_from_path(name, geometry_object.meshPath, color_override)
+            frame = self._add_mesh_from_path(
+                name, geometry_object.meshPath, color_override
+            )
         elif isinstance(geom, hppfcl.Convex):
             if len(geometry_object.meshPath) > 0:
-                frame = self._add_mesh_from_path(name, geometry_object.meshPath, color_override)
+                frame = self._add_mesh_from_path(
+                    name, geometry_object.meshPath, color_override
+                )
             else:
                 frame = self._add_mesh_from_convex(name, geom, color_override)
         else:

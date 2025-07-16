@@ -29,10 +29,7 @@ try:
     viz = ViserVisualizer(model, collision_model, visual_model)
     viz.initViewer(open=True)
 except ImportError as err:
-    print(
-        "Error while initializing the viewer. "
-        "It seems you should install viser"
-    )
+    print("Error while initializing the viewer. It seems you should install viser")
     print(err)
     sys.exit(0)
 
@@ -81,6 +78,7 @@ viz.display()
 
 model.gravity.linear[:] = 0.0
 dt = 0.01
+
 
 def sim_loop():
     tau0 = np.zeros(model.nv)
