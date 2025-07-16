@@ -10,7 +10,7 @@ import pinocchio as pin
 from pinocchio.visualize import MeshcatVisualizer as Visualizer
 
 # load model from example-robot urdf
-model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR").strip('"'))
+model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR"))
 mesh_dir = model_path.parent.parent
 urdf_filename = "ur5_robot.urdf"
 urdf_model_path = model_path / "ur_description/urdf" / urdf_filename

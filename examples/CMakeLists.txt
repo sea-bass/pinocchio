@@ -49,7 +49,7 @@ function(ADD_PINOCCHIO_CPP_EXAMPLE EXAMPLE)
     target_link_libraries(${EXAMPLE_NAME} PRIVATE example-robot-data::example-robot-data)
   else()
     target_compile_definitions(
-      ${EXAMPLE_NAME} PRIVATE "EXAMPLE_ROBOT_DATA_MODEL_DIR=${EXAMPLE_ROBOT_DATA_MODEL_DIR}")
+      ${EXAMPLE_NAME} PRIVATE "EXAMPLE_ROBOT_DATA_MODEL_DIR=\"${EXAMPLE_ROBOT_DATA_MODEL_DIR}\"")
   endif()
 endfunction()
 

@@ -9,7 +9,7 @@ import pinocchio as pin
 
 # Load UR robot arm
 # This path refers to Pinocchio source code but you can define your own directory here.
-model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR").strip('"'))
+model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR"))
 mesh_dir = model_path.parent.parent
 # You should change here to set up your own URDF file
 urdf_filename = model_path / "ur_description/urdf/ur5_robot.urdf"

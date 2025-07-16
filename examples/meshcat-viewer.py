@@ -13,7 +13,7 @@ from pinocchio.visualize import MeshcatVisualizer
 # Load the URDF model.
 # Conversion with str seems to be necessary when executing this file with ipython
 
-model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR").strip('"'))
+model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR"))
 mesh_dir = model_path.parent.parent
 # urdf_filename = "talos_reduced.urdf"
 # urdf_model_path = join(join(model_path,"talos_data/robots"),urdf_filename)

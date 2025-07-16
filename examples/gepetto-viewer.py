@@ -9,7 +9,7 @@ import pinocchio as pin
 from pinocchio.visualize import GepettoVisualizer
 
 # Load the URDF model.
-model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR").strip('"'))
+model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR"))
 mesh_dir = model_path.parent.parent
 urdf_filename = "talos_reduced.urdf"
 urdf_model_path = model_path / "talos_data/robots" / urdf_filename

@@ -10,7 +10,7 @@ from test_case import PinocchioTestCase as TestCase
 @unittest.skipUnless(pin.WITH_URDFDOM, "Needs URDFDOM")
 class TestContactInverseDynamics(TestCase):
     def setUp(self):
-        self.model_dir = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR").strip('"'))
+        self.model_dir = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR"))
         self.model_path = self.model_dir / "talos_data"
         self.urdf_filename = "talos_reduced.urdf"
         self.srdf_filename = "talos.srdf"

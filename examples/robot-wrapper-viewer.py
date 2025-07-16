@@ -28,7 +28,7 @@ if len(argv) > 1:
 
 # Load the URDF model with RobotWrapper
 # Conversion with str seems to be necessary when executing this file with ipython
-model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR").strip('"'))
+model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR"))
 mesh_dir = model_path.parent.parent
 urdf_filename = "talos_reduced.urdf"
 urdf_model_path = model_path / "talos_data/robots" / urdf_filename

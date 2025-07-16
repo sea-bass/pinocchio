@@ -5,7 +5,7 @@ from sys import argv
 import pinocchio
 
 # This path refers to Pinocchio source code but you can define your own directory here.
-model_dir = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR").strip('"'))
+model_dir = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR"))
 
 # You should change here to set up your own URDF file or just pass it as an argument of
 # this example.

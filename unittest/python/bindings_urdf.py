@@ -8,7 +8,7 @@ import pinocchio as pin
 @unittest.skipUnless(pin.WITH_URDFDOM, "Needs URDFDOM")
 class TestGeometryObjectUrdfBindings(unittest.TestCase):
     def setUp(self):
-        self.model_dir = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR").strip('"'))
+        self.model_dir = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR"))
         self.model_path = self.model_dir / "romeo_description/urdf/romeo.urdf"
 
     def test_load(self):

@@ -128,7 +128,7 @@ function(ADD_PINOCCHIO_UNIT_TEST name)
     target_link_libraries(${TEST_NAME} PRIVATE example-robot-data::example-robot-data)
   else()
     target_compile_definitions(
-      ${TEST_NAME} PRIVATE "EXAMPLE_ROBOT_DATA_MODEL_DIR=${EXAMPLE_ROBOT_DATA_MODEL_DIR}")
+      ${TEST_NAME} PRIVATE "EXAMPLE_ROBOT_DATA_MODEL_DIR=\"${EXAMPLE_ROBOT_DATA_MODEL_DIR}\"")
   endif()
 endfunction()
 

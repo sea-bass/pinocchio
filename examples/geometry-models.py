@@ -5,9 +5,7 @@ from sys import argv
 import pinocchio
 
 model_path = Path(
-    Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR").strip('"'))
-    if len(argv) < 2
-    else argv[1]
+    Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR")) if len(argv) < 2 else argv[1]
 )
 mesh_dir = model_path.parent.parent
 urdf_model_path = model_path / "ur_description/urdf/ur5_robot.urdf"

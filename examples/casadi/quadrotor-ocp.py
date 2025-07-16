@@ -251,7 +251,7 @@ class OptimalControlProblem:
 
 
 def main():
-    model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR").strip('"'))
+    model_path = Path(os.environ.get("EXAMPLE_ROBOT_DATA_MODEL_DIR"))
     mesh_dir = model_path.parent.parent
     urdf_filename = model_path / "hector_description/robots/quadrotor_base.urdf"
     model = pin.robot_wrapper.RobotWrapper.BuildFromURDF(
