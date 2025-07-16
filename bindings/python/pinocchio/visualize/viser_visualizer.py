@@ -326,8 +326,8 @@ class ViserVisualizer(BaseVisualizer):
         Capture an image from the Viser viewer and return an RGB array.
 
         Parameters:
-            w: The width of the captured image.
-            h: The height of the captured image.
+            w: The width of the captured image. If None, uses the actual camera width.
+            h: The height of the captured image. If None, uses the actual camera height.
             client_id: The ID of the Viser client handle.
                 If None, uses the first available client.
             transport_format: The transport format to use for the captured image.
@@ -346,7 +346,11 @@ class ViserVisualizer(BaseVisualizer):
         else:
             cli = clients[client_id]
 
-        return cli.get_render(height=h, width=w, transport_format=transport_format)
+        height = h or cli.camera.image_height
+        width = w or cli.camera.image_width
+        return cli.get_render(
+            height=height, width=width, transport_format=transport_format
+        )
 
     def setBackgroundColor(self, preset_name: str = "gray", col_top=None, col_bot=None):
         raise NotImplementedError("setBackgroundColor is not yet implemented.")
