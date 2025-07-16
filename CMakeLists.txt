@@ -155,6 +155,8 @@ option(CHECK_RUNTIME_MALLOC "Check if some memory allocations are performed at r
 
 option(ENABLE_TEMPLATE_INSTANTIATION "Template instantiation of the main library" ON)
 
+set(PINOCCHIO_MODEL_DIR "${PROJECT_SOURCE_DIR}/models")
+
 if(BUILD_BENCHMARK
    OR BUILD_EXAMPLES
    OR BUILD_TESTING)
@@ -210,8 +212,6 @@ endif(ENABLE_TEMPLATE_INSTANTIATION)
 macro(TAG_LIBRARY_VERSION target)
   set_target_properties(${target} PROPERTIES SOVERSION ${PROJECT_VERSION})
 endmacro(TAG_LIBRARY_VERSION)
-
-set(PINOCCHIO_MODEL_DIR "${PROJECT_SOURCE_DIR}/models")
 
 # ----------------------------------------------------
 # --- DEPENDENCIES -----------------------------------
