@@ -37,6 +37,13 @@ function(ADD_PINOCCHIO_CPP_EXAMPLE EXAMPLE)
     PRIVATE ${EXAMPLE_PRIVATE_DEFINITIONS} PINOCCHIO_MODEL_DIR="${PINOCCHIO_MODEL_DIR}"
             COAL_DISABLE_HPP_FCL_WARNINGS)
 
+  modernize_target_link_libraries(
+    ${EXAMPLE_NAME}
+    SCOPE PRIVATE
+    TARGETS Boost::filesystem
+    LIBRARIES ${Boost_FILESYSTEM_LIBRARY}}
+    INCLUDE_DIRS ${Boost_INCLUDE_DIRS})
+
   # There is no RPATH in Windows, then we must use the PATH to find the DLL
   if(WIN32)
     string(REPLACE ";" "\\\;" _PATH "$ENV{PATH}")
