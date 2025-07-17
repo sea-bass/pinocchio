@@ -276,6 +276,7 @@ if(BUILD_PYTHON_INTERFACE)
           meshcat_visualizer.py
           panda3d_visualizer.py
           rviz_visualizer.py
+          viser_visualizer.py
           visualizers.py)
 
   # --- STUBS --- #

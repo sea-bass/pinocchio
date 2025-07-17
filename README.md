@@ -199,6 +199,7 @@ Please note that we always advise including the `pinocchio/fwd.hpp` header as th
 -   [Meshcat](https://github.com/rdeits/meshcat): supporting visualization in Python and which can be embedded inside any browser.
 -   [Panda3d](https://github.com/ikalevatykh/panda3d_viewer): supporting visualization in Python and which can be embedded inside any browser.
 -   [RViz](https://github.com/ros-visualization/rviz): supporting visualization in Python and which can interact with other ROS packages.
+-   [Viser](https://github.com/nerfstudio-project/viser): supporting browser-based visualization in Python, with support for widgets such as sliders and interactive markers.
 
 Many external viewers can also be integrated. For more information, see the example [here](https://github.com/stack-of-tasks/pinocchio/blob/devel/bindings/python/pinocchio/visualize/base_visualizer.py).
 
@@ -275,7 +276,7 @@ In addition to the core dev team, the following people have also been involved i
 -   [Sarah El Kazdadi](https://github.com/sarah-ek) (Inria): multi-precision arithmetic support
 -   [Nicolas Torres Alberto](https://scholar.google.com/citations?user=gYNLhEIAAAAJ&hl=en) (Inria): features extension
 -   [Shubham Singh](https://github.com/shubhamsingh91) (UT Austin): second-order inverse dynamics derivatives
--   [Sebastian Castro](https://roboticseabass.com) (The AI Institute): MeshCat viewer feature extension
+-   [Sebastian Castro](https://roboticseabass.com) (RAI Institute): Viser visualizer and MeshCat visualizer feature extension
 -   [Lev Kozlov](https://github.com/lvjonok): Kinetic and potential energy regressors
 -   [Simeon Nedelchev](https://github.com/simeon-ned): Pseudo inertia and Log-Cholesky parametrization
 
