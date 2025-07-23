@@ -37,5 +37,5 @@ body:
       label: Checklist
       options:
         - label: I have checked that there is no similar [issue](https://github.com/stack-of-tasks/pinocchio/issues)/[discussion](https://github.com/stack-of-tasks/pinocchio/discussions)
-            in the repo
+            in the repo.
           required: true
