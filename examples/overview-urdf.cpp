@@ -5,9 +5,9 @@
 
 #include <iostream>
 
-// PINOCCHIO_MODEL_DIR is defined by the CMake but you can define your own directory here.
-#ifndef PINOCCHIO_MODEL_DIR
-  #define PINOCCHIO_MODEL_DIR "path_to_the_model_dir"
+// EXAMPLE_ROBOT_DATA_MODEL_DIR is defined by the CMake but you can define your own directory here.
+#ifndef EXAMPLE_ROBOT_DATA_MODEL_DIR
+  #define EXAMPLE_ROBOT_DATA_MODEL_DIR "path_to_the_model_dir"
 #endif
 
 int main(int argc, char ** argv)
