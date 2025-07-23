@@ -162,7 +162,7 @@ if(BUILD_BENCHMARK
    OR BUILD_TESTING)
   # example-robot-data is required
   if(EXAMPLE_ROBOT_DATA_MODEL_DIR)
-    message(INFO "Using provided examle-robot-data at: ${EXAMPLE_ROBOT_DATA_MODEL_DIR}")
+    message(INFO "Using provided example-robot-data at: ${EXAMPLE_ROBOT_DATA_MODEL_DIR}")
   elseif(EXISTS "${CMAKE_CURRENT_LIST_DIR}/models/example-robot-data/CMakeLists.txt")
     set(EXAMPLE_ROBOT_DATA_MODEL_DIR "${PINOCCHIO_MODEL_DIR}/example-robot-data/robots")
   else()
@@ -172,6 +172,7 @@ if(BUILD_BENCHMARK
     string(REPLACE "EXAMPLE_ROBOT_DATA_MODEL_DIR=" "" EXAMPLE_ROBOT_DATA_MODEL_DIR_QUOTES
                    "${EXAMPLE_ROBOT_DATA_MODEL_DIR_DEF}")
     string(REPLACE "\"" "" EXAMPLE_ROBOT_DATA_MODEL_DIR "${EXAMPLE_ROBOT_DATA_MODEL_DIR_QUOTES}")
+    message(INFO "Using system example-robot-data at: ${EXAMPLE_ROBOT_DATA_MODEL_DIR}")
   endif()
 endif()
 
