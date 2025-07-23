@@ -16,7 +16,8 @@ body:
     id: motivation
     attributes:
       label: Motivation
-      description: Please outline the motivation for the proposal. Is your feature request related to a problem? e.g.,"I'm always frustrated when [...]". If this is related to another GitHub issue, please link here too.
+      description: Please outline the motivation for the proposal. Is your feature request related to a problem? e.g.,"I'm always frustrated when [...]".
+        If this is related to another GitHub issue, please link here too.
 
   - type: textarea
     id: alternatives
@@ -35,5 +36,6 @@ body:
     attributes:
       label: Checklist
       options:
-        - label: I have checked that there is no similar [issue](https://github.com/stack-of-tasks/pinocchio/issues)/[discussion](https://github.com/stack-of-tasks/pinocchio/discussions) in the repo
+        - label: I have checked that there is no similar [issue](https://github.com/stack-of-tasks/pinocchio/issues)/[discussion](https://github.com/stack-of-tasks/pinocchio/discussions)
+            in the repo
           required: true

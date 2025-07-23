@@ -18,4 +18,3 @@ If applicable, link the related issue using "Fixes #issue_number".
 - [ ] I have added tests that prove my fix or feature works
 - [ ] I have updated the [CHANGELOG](../../CHANGELOG.md) (except if it's a CI related issue)
 - [ ] I have updated [README credits section](https://github.com/stack-of-tasks/pinocchio?tab=readme-ov-file#credits)
-

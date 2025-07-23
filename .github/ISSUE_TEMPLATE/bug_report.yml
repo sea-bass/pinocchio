@@ -58,9 +58,11 @@ body:
       options:
         - label: I have checked all my packages are installed from the same package manager (conda-forge, Nix, PyPI, robotpkg, ROS)
           required: true
-        - label: I have checked that there is no similar [issue](https://github.com/stack-of-tasks/pinocchio/issues)/[discussion](https://github.com/stack-of-tasks/pinocchio/discussions) in the repo
+        - label: I have checked that there is no similar [issue](https://github.com/stack-of-tasks/pinocchio/issues)/[discussion](https://github.com/stack-of-tasks/pinocchio/discussions)
+            in the repo
           required: true
         - label: I have provided a minimal and working example to reproduce the bug
           required: true
-        - label: I've used the [markdown code blocks](https://help.github.com/en/articles/creating-and-highlighting-code-blocks) for both code and stack traces.
+        - label: I've used the [markdown code blocks](https://help.github.com/en/articles/creating-and-highlighting-code-blocks) for both code and stack
+            traces.
           required: true
