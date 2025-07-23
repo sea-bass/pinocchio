@@ -63,6 +63,6 @@ body:
           required: true
         - label: I have provided a minimal and working example to reproduce the bug
           required: true
-        - label: I have used [Markdown code blocks](https://help.github.com/en/articles/creating-and-highlighting-code-blocks) for both code and stack
-            traces/compiler errors.
+        - label: I have used [Markdown code blocks](https://help.github.com/en/articles/creating-and-highlighting-code-blocks) for both code and stack traces/compiler
+            errors.
           required: true
