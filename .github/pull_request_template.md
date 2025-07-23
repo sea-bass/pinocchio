@@ -16,5 +16,5 @@ If applicable, link the related issue using "Fixes #issue_number".
 - [ ] I have commented my code where necessary
 - [ ] I have made corresponding changes to the doxygen documentation
 - [ ] I have added tests that prove my fix or feature works
-- [ ] I have updated the [CHANGELOG](../../CHANGELOG.md) or added the "no changelog" label if it's a CI-related issue
+- [ ] I have updated the [CHANGELOG](../CHANGELOG.md) or added the "no changelog" label if it's a CI-related issue
 - [ ] I have updated the [README credits section](https://github.com/stack-of-tasks/pinocchio?tab=readme-ov-file#credits)
