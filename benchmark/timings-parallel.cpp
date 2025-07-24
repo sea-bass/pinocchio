@@ -30,7 +30,7 @@
 #include "pinocchio/multibody/sample-models.hpp"
 
 #include <benchmark/benchmark.h>
-#include <boost/filesystem.h>
+#include <boost/filesystem.hpp>
 
 #include <iostream>
 
