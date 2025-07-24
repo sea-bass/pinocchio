@@ -94,6 +94,11 @@ function(pinocchio_add_lib_unit_test name)
   set(TEST_NAME "${PROJECT_NAME}-test-py-${name}")
   add_python_unit_test(${TEST_NAME} "unittest/python/${name}.py" "bindings/python"
                        "unittest/python")
+  get_test_property(${TEST_NAME} ENVIRONMENT _ENVIRONMENT)
+  set_tests_properties(
+    "${TEST_NAME}"
+    PROPERTIES ENVIRONMENT
+               "${_ENVIRONMENT};EXAMPLE_ROBOT_DATA_MODEL_DIR=${EXAMPLE_ROBOT_DATA_MODEL_DIR}")
   add_windows_dll_path_to_test(${TEST_NAME})
 endfunction()
 
@@ -114,6 +119,11 @@ endif()
 foreach(TEST ${${PROJECT_NAME}_PYTHON_TESTS})
   set(TEST_NAME "${PROJECT_NAME}-test-py-${TEST}")
   add_python_unit_test(${TEST_NAME} "unittest/python/${TEST}.py" "bindings/python")
+  get_test_property(${TEST_NAME} ENVIRONMENT _ENVIRONMENT)
+  set_tests_properties(
+    "${TEST_NAME}"
+    PROPERTIES ENVIRONMENT
+               "${_ENVIRONMENT};EXAMPLE_ROBOT_DATA_MODEL_DIR=${EXAMPLE_ROBOT_DATA_MODEL_DIR}")
   add_windows_dll_path_to_test(${TEST_NAME})
 endforeach(TEST ${${PROJECT_NAME}_PYTHON_TESTS})
 
@@ -138,6 +148,11 @@ if(MEMORYCHECK_COMMAND AND MEMORYCHECK_COMMAND MATCHES ".*valgrind$")
       "unittest/python/${TEST}.supp"
       MODULES
       "bindings/python")
+    get_test_property(${TEST_NAME} ENVIRONMENT _ENVIRONMENT)
+    set_tests_properties(
+      "${TEST_NAME}"
+      PROPERTIES ENVIRONMENT
+                 "${_ENVIRONMENT};EXAMPLE_ROBOT_DATA_MODEL_DIR=${EXAMPLE_ROBOT_DATA_MODEL_DIR}")
     add_windows_dll_path_to_test(${TEST_NAME})
   endforeach()
 else()

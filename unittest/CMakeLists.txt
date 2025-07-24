@@ -121,8 +121,21 @@ function(ADD_PINOCCHIO_UNIT_TEST name)
     TARGETS Boost::unit_test_framework
     LIBRARIES ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
+  modernize_target_link_libraries(
+    ${TEST_NAME}
+    SCOPE PRIVATE
+    TARGETS Boost::filesystem
+    LIBRARIES ${Boost_FILESYSTEM_LIBRARY}}
+    INCLUDE_DIRS ${Boost_INCLUDE_DIRS})
+
   if(PKGS)
     target_link_libraries(${TEST_NAME} PRIVATE ${PKGS})
+  endif()
+  if(TARGET example-robot-data::example-robot-data)
+    target_link_libraries(${TEST_NAME} PRIVATE example-robot-data::example-robot-data)
+  else()
+    target_compile_definitions(
+      ${TEST_NAME} PRIVATE "EXAMPLE_ROBOT_DATA_MODEL_DIR=\"${EXAMPLE_ROBOT_DATA_MODEL_DIR}\"")
   endif()
 endfunction()
 

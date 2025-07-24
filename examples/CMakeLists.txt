@@ -32,10 +32,15 @@ function(ADD_PINOCCHIO_CPP_EXAMPLE EXAMPLE)
     target_link_libraries(${EXAMPLE_NAME} PUBLIC ${PROJECT_NAME}_casadi)
   endif()
 
-  target_compile_definitions(
+  target_compile_definitions(${EXAMPLE_NAME} PRIVATE ${EXAMPLE_PRIVATE_DEFINITIONS}
+                                                     COAL_DISABLE_HPP_FCL_WARNINGS)
+
+  modernize_target_link_libraries(
     ${EXAMPLE_NAME}
-    PRIVATE ${EXAMPLE_PRIVATE_DEFINITIONS} PINOCCHIO_MODEL_DIR="${PINOCCHIO_MODEL_DIR}"
-            COAL_DISABLE_HPP_FCL_WARNINGS)
+    SCOPE PRIVATE
+    TARGETS Boost::filesystem
+    LIBRARIES ${Boost_FILESYSTEM_LIBRARY}}
+    INCLUDE_DIRS ${Boost_INCLUDE_DIRS})
 
   # There is no RPATH in Windows, then we must use the PATH to find the DLL
   if(WIN32)
@@ -44,6 +49,12 @@ function(ADD_PINOCCHIO_CPP_EXAMPLE EXAMPLE)
         "PATH=${_PATH}\\\;${PROJECT_BINARY_DIR}/src\\\;${PROJECT_BINARY_DIR}/bindings/python/pinocchio"
     )
     set_tests_properties(${EXAMPLE_NAME} PROPERTIES ENVIRONMENT "${ENV_VARIABLES}")
+  endif()
+  if(TARGET example-robot-data::example-robot-data)
+    target_link_libraries(${EXAMPLE_NAME} PRIVATE example-robot-data::example-robot-data)
+  else()
+    target_compile_definitions(
+      ${EXAMPLE_NAME} PRIVATE "EXAMPLE_ROBOT_DATA_MODEL_DIR=\"${EXAMPLE_ROBOT_DATA_MODEL_DIR}\"")
   endif()
 endfunction()
 
@@ -113,6 +124,11 @@ if(BUILD_PYTHON_INTERFACE)
   foreach(EXAMPLE ${${PROJECT_NAME}_PYTHON_EXAMPLES})
     set(EXAMPLE_NAME "${PROJECT_NAME}-example-py-${EXAMPLE}")
     add_python_unit_test("${EXAMPLE_NAME}" "examples/${EXAMPLE}.py" "bindings/python")
+    get_test_property(${EXAMPLE_NAME} ENVIRONMENT _ENVIRONMENT)
+    set_tests_properties(
+      "${EXAMPLE_NAME}"
+      PROPERTIES ENVIRONMENT
+                 "${_ENVIRONMENT};EXAMPLE_ROBOT_DATA_MODEL_DIR=${EXAMPLE_ROBOT_DATA_MODEL_DIR}")
     add_windows_dll_path_to_test(${EXAMPLE_NAME})
   endforeach()
 endif()

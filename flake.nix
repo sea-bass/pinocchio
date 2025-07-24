@@ -25,7 +25,8 @@
           };
           packages = {
             default = self'.packages.pinocchio;
-            pinocchio = pkgs.python3Packages.pinocchio.overrideAttrs {
+            pinocchio = pkgs.python3Packages.pinocchio.overrideAttrs (super: {
+              propagatedBuildInputs = super.propagatedBuildInputs ++ [ pkgs.example-robot-data ];
               src = pkgs.lib.fileset.toSource {
                 root = ./.;
                 fileset = pkgs.lib.fileset.unions [
@@ -43,7 +44,7 @@
                   ./utils
                 ];
               };
-            };
+            });
           };
         };
     };
