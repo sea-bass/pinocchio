@@ -19,6 +19,7 @@
 #include <hpp/fcl/mesh_loader/loader.h>
 
 #include <vector>
+#include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
 using namespace pinocchio;
@@ -34,7 +35,8 @@ BOOST_AUTO_TEST_CASE(test_geometry_pool)
   pinocchio::urdf::buildModel(filename, JointModelFreeFlyer(), model);
   Data data(model);
 
-  const std::string package_path = PINOCCHIO_MODEL_DIR;
+  const std::string package_path =
+    boost::filesystem::path(EXAMPLE_ROBOT_DATA_MODEL_DIR).parent_path().parent_path().string();
   hpp::fcl::MeshLoaderPtr mesh_loader = std::make_shared<hpp::fcl::CachedMeshLoader>();
   const std::string srdf_filename =
     EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/talos_data/srdf/talos.srdf");
@@ -214,7 +216,8 @@ BOOST_AUTO_TEST_CASE(test_talos)
   pinocchio::urdf::buildModel(filename, JointModelFreeFlyer(), model);
   Data data(model), data_ref(model);
 
-  const std::string package_path = PINOCCHIO_MODEL_DIR;
+  const std::string package_path =
+    boost::filesystem::path(EXAMPLE_ROBOT_DATA_MODEL_DIR).parent_path().parent_path().string();
   hpp::fcl::MeshLoaderPtr mesh_loader = std::make_shared<hpp::fcl::CachedMeshLoader>();
   const std::string srdf_filename =
     EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/talos_data/srdf/talos.srdf");
@@ -292,7 +295,8 @@ BOOST_AUTO_TEST_CASE(test_pool_talos_memory)
   pinocchio::urdf::buildModel(filename, JointModelFreeFlyer(), model);
   Data data_ref(model);
 
-  const std::string package_path = PINOCCHIO_MODEL_DIR;
+  const std::string package_path =
+    boost::filesystem::path(EXAMPLE_ROBOT_DATA_MODEL_DIR).parent_path().parent_path().string();
   hpp::fcl::MeshLoaderPtr mesh_loader = std::make_shared<hpp::fcl::CachedMeshLoader>();
   const std::string srdf_filename =
     EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/talos_data/srdf/talos.srdf");
@@ -336,7 +340,8 @@ BOOST_AUTO_TEST_CASE(test_pool_talos)
   pinocchio::urdf::buildModel(filename, JointModelFreeFlyer(), model);
   Data data_ref(model);
 
-  const std::string package_path = PINOCCHIO_MODEL_DIR;
+  const std::string package_path =
+    boost::filesystem::path(EXAMPLE_ROBOT_DATA_MODEL_DIR).parent_path().parent_path().string();
   hpp::fcl::MeshLoaderPtr mesh_loader = std::make_shared<hpp::fcl::CachedMeshLoader>();
   const std::string srdf_filename =
     EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/talos_data/srdf/talos.srdf");

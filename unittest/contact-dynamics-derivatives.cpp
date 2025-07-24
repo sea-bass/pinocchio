@@ -2531,7 +2531,6 @@ BOOST_AUTO_TEST_CASE(test_constraint_dynamics_derivatives_cassie_proximal)
     EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/cassie_description/robots/cassie.sdf");
   const std::string srdf_filename =
     EXAMPLE_ROBOT_DATA_MODEL_DIR + std::string("/cassie_description/srdf/cassie_v2.srdf");
-  const std::string dir = PINOCCHIO_MODEL_DIR;
 
   pinocchio::Model model;
   PINOCCHIO_STD_VECTOR_WITH_EIGEN_ALLOCATOR(pinocchio::RigidConstraintModel) constraint_models;
