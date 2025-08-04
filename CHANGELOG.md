@@ -12,6 +12,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Beta version of Viser visualizer ([#2718](https://github.com/stack-of-tasks/pinocchio/pull/2718))
+- Add `pinocchio::graph::ModelGraph` class
+  - Simple API to build a model
+  - Manage joint offset
+  - Create a `pinocchio::Model` with any frame as root frame
+  - Create a `pinocchio::Model` with any joint as root joint
+  - Reliably merge two models with `pinocchio::graph::mergeGraphs` function
+  - Reliably fix joints at any configuration with `pinocchio::graph::fixJointsGraph`
+  - [C++ example](./examples/model-graph.cpp)
+  - [Python example](./examples/model-graph.py)
+  - Create a `pinocchio::geometryModel` using a `pinocchio::graph::ModelGraph`
+  - [Python example](./examples/model-graph-geometry.py)
+- Add `pinocchio::graph::ModelConfigurationConverter` class
+  - Convert configuration or tangent vector from two model with different root
+  - [C++ example](./examples/model-configuration-converter.cpp)
+  - [Python example](./examples/model-configuration-converter.py)
 
 ### Fixed
 - Fixed explicit conversions to Scalar type in log.hxx ([#2730](https://github.com/stack-of-tasks/pinocchio/pull/2730))
