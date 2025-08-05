@@ -292,7 +292,7 @@ if(BUILD_PYTHON_INTERFACE)
       ${PROJECT_NAME}
       ${ABSOLUTE_PYTHON_SITELIB}
       ${PYWRAP}_default
-      ${PROJECT_NAME}_default
+      ${PROJECT_NAME}::${PROJECT_NAME}_default
       ${STUBGEN_DEPENDENCIES}
       ${python_build_target_name})
   endif(GENERATE_PYTHON_STUBS)
