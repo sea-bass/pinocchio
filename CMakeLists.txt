@@ -464,7 +464,7 @@ function(ADD_WINDOWS_DLL_PATH_TO_TEST TEST_NAME)
     get_test_property(${TEST_NAME} ENVIRONMENT ENV_VARIABLES)
     # TODO don't do this in the future
     list(APPEND ENV_VARIABLES
-         "PINOCCHIO_WINDOWS_DLL_PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}_default>")
+         "PINOCCHIO_WINDOWS_DLL_PATH=$<TARGET_FILE_DIR:${PROJECT_NAME}::${PROJECT_NAME}_default>")
     set_tests_properties(${TEST_NAME} PROPERTIES ENVIRONMENT "${ENV_VARIABLES}")
   endif()
 endfunction()
