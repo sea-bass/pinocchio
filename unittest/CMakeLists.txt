@@ -8,13 +8,15 @@
 # --- MACROS ------------------------------------------------------------------
 
 function(ADD_TEST_CFLAGS target)
-  get_cpp_test_name(${target} ${CMAKE_CURRENT_SOURCE_DIR} test_name)
-  foreach(ARG ${ARGN})
-    set_property(
-      TARGET ${test_name}
-      APPEND_STRING
-      PROPERTY COMPILE_FLAGS "${ARG} ")
-  endforeach()
+  if(NOT BUILD_STANDALONE_PYTHON_INTERFACE)
+    get_cpp_test_name(${target} ${CMAKE_CURRENT_SOURCE_DIR} test_name)
+    foreach(ARG ${ARGN})
+      set_property(
+        TARGET ${test_name}
+        APPEND_STRING
+        PROPERTY COMPILE_FLAGS "${ARG} ")
+    endforeach()
+  endif()
 endfunction()
 
 # Compute flags outside the macro to avoid recomputing it for each tests
