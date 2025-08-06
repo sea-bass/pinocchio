@@ -122,6 +122,7 @@ if(BUILD_PYTHON_INTERFACE)
         ${PROJECT_NAME}_PYTHON_EXAMPLES
         meshcat-viewer
         meshcat-viewer-dae
+        viser-viewer
         collisions
         collision-with-point-clouds
         append-urdf-model-with-another-model
