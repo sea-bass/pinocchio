@@ -218,7 +218,7 @@ class ViserVisualizer(BaseVisualizer):
         """
         Load a mesh from a file.
         """
-        mesh = trimesh.load(mesh_path)
+        mesh = trimesh.load_mesh(mesh_path)
         if color is None:
             return self.viewer.scene.add_mesh_trimesh(name, mesh)
         else:
