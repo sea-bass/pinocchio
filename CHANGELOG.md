@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Convert configuration or tangent vector from two model with different root
   - [C++ example](./examples/model-configuration-converter.cpp)
   - [Python example](./examples/model-configuration-converter.py)
+- Fix Viser visualizer loading DAE files as trimesh.Scene ([#2748](https://github.com/stack-of-tasks/pinocchio/pull/2748))
 
 ### Fixed
 - Fixed explicit conversions to Scalar type in log.hxx ([#2730](https://github.com/stack-of-tasks/pinocchio/pull/2730))
