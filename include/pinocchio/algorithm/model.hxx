@@ -1,5 +1,6 @@
 //
-// Copyright (c) 2019-2022 CNRS INRIA
+// Copyright (c) 2018-2018 CNRS
+// Copyright (c) 2018-2025 INRIA
 //
 
 #ifndef __pinocchio_algorithm_model_hxx__
@@ -692,6 +693,9 @@ namespace pinocchio
           joint_input_model.jointVelocitySelector(input_model.rotorInertia);
         jmodel_out.jointVelocitySelector(reduced_model.rotorGearRatio) =
           joint_input_model.jointVelocitySelector(input_model.rotorGearRatio);
+
+        jmodel_out.jointVelocitySelector(reduced_model.armature) =
+          joint_input_model.jointVelocitySelector(input_model.armature);
       }
     }
 
