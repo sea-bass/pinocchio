@@ -136,7 +136,7 @@ jobs:
           pixi run -e ${{ matrix.environment }} cmake --build build --target uninstall
 
       - name: Remove build directory to save disk space
-        if: contains(matrix.os, 'ubuntu')) && contains(matrix.build_type, 'Debug')
+        if: contains(matrix.os, 'ubuntu') && contains(matrix.build_type, 'Debug')
         run: |
           # Remove build directory to save disk space
           # This is only done on Ubuntu because this create some issues with clang and ccache on OSX
