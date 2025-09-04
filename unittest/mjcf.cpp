@@ -1429,4 +1429,61 @@ BOOST_AUTO_TEST_CASE(test_get_unknown_size_vector_from_stream)
   BOOST_CHECK(v3 == expected3);
 }
 
+// This non regression test address issue: https://github.com/stack-of-tasks/pinocchio/issues/2747
+// Site attached to a fixed body should be added to the model as OP_FRAME.
+BOOST_AUTO_TEST_CASE(test_site_attached_to_fixed_body)
+{
+  std::istringstream xmlData(R"(<?xml version="1.0" ?>
+<mujoco model="double_pendulum">
+    <compiler angle="radian" />
+
+    <worldbody>
+        <body name="link1" pos="0 0 0">
+            <joint name="j1" type="hinge" axis="1 0 0" pos="0 0 0" />
+            <site name="site1" />
+            <body name="fixed_body_1">
+                <site name="fixed_site_1" pos="0 0 0" />
+            </body>
+            <body name="link2" pos="0 0 -1">
+                <joint name="j2" type="hinge" axis="1 0 0" pos="0 0 0" />
+                <site name="site2" />
+                <body name="fixed_body_2" pos="0 0 -1">
+                    <site name="fixed_site_2" />
+                </body>
+            </body>
+        </body>
+    </worldbody>
+</mujoco>)");
+
+  auto namefile = createTempFile(xmlData);
+
+  pinocchio::Model model_m;
+  pinocchio::mjcf::buildModel(namefile.name(), model_m);
+
+  BOOST_REQUIRE(model_m.existFrame("j1", pinocchio::FrameType::JOINT));
+  BOOST_CHECK(model_m.existFrame("site1", pinocchio::FrameType::OP_FRAME));
+  BOOST_CHECK(model_m.existFrame("fixed_body_1", pinocchio::FrameType::BODY));
+  BOOST_REQUIRE(model_m.existFrame("fixed_site_1", pinocchio::FrameType::OP_FRAME));
+  BOOST_REQUIRE(model_m.existFrame("j2", pinocchio::FrameType::JOINT));
+  BOOST_CHECK(model_m.existFrame("site2", pinocchio::FrameType::OP_FRAME));
+  BOOST_CHECK(model_m.existFrame("fixed_body_2", pinocchio::FrameType::BODY));
+  BOOST_REQUIRE(model_m.existFrame("fixed_site_2", pinocchio::FrameType::OP_FRAME));
+
+  auto j1_id = model_m.getJointId("j1");
+  auto j2_id = model_m.getJointId("j2");
+
+  auto site_1_id = model_m.getFrameId("fixed_site_1");
+  auto site_2_id = model_m.getFrameId("fixed_site_2");
+
+  const auto & site_1 = model_m.frames[site_1_id];
+  const auto & site_2 = model_m.frames[site_2_id];
+
+  BOOST_CHECK_EQUAL(site_1.parentJoint, j1_id);
+  BOOST_CHECK_EQUAL(site_2.parentJoint, j2_id);
+
+  BOOST_CHECK(site_1.placement.isIdentity());
+  BOOST_CHECK(site_2.placement.rotation().isIdentity());
+  BOOST_CHECK(site_2.placement.translation().isApprox(Eigen::Vector3d(0, 0, -1.)));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
