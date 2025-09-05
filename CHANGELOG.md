@@ -39,6 +39,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix mimic patch for crba ([#2716](https://github.com/stack-of-tasks/pinocchio/pull/2716))
 - Fix missing argument in exposeDelassus() pybind definition ([#2731](https://github.com/stack-of-tasks/pinocchio/pull/2731))
 - Fix copy of Model.armature in buidlReducedModel(...) ([#2749](https://github.com/stack-of-tasks/pinocchio/pull/2749))
+- Add site attached to a fixed body in MJCF parse ([#2754](https://github.com/stack-of-tasks/pinocchio/pull/2754))
 
 ### Changed
 - Disable coal/hpp-fcl warnings when building Pinocchio ([#2686](https://github.com/stack-of-tasks/pinocchio/pull/2686))
