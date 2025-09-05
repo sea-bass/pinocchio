@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Continuous joints can now be parsed as mimic from a urdf file ([#2756](https://github.com/stack-of-tasks/pinocchio/pull/2756))
 - Beta version of Viser visualizer ([#2718](https://github.com/stack-of-tasks/pinocchio/pull/2718))
 - Add `pinocchio::graph::ModelGraph` class
   - Simple API to build a model
