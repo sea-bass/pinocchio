@@ -308,4 +308,84 @@ BOOST_AUTO_TEST_CASE(test_getFrameId_identical_link_and_joint_name)
   BOOST_CHECK(model.getFrameId("base", pinocchio::FrameType::FIXED_JOINT) == 2);
 }
 
+BOOST_AUTO_TEST_CASE(test_mimic_parsing)
+{
+  // Read file as XML
+  std::string filestr(R"(<?xml version="1.0" encoding="utf-8"?>
+                      <robot name="test">
+                        <link name="base_link"/>
+                        <link name="link_1"/>
+                        <link name="link_2"/>
+                        <link name="link_3"/>
+                        <link name="link_4"/>
+                        <joint name="joint_1" type="revolute">
+                          <origin xyz="1 0 0"/>
+                          <axis xyz="0 0 1"/>
+                          <parent link="base_link"/>
+                          <child link="link_1"/>
+                          <limit effort="50" lower="0.0" upper="0.8" velocity="0.5"/>
+                        </joint>
+                        <joint name="joint_2" type="revolute">
+                          <origin xyz="0 1 0"/>
+                          <axis xyz="0 0 1"/>
+                          <parent link="link_1"/>
+                          <child link="link_2"/>
+                          <mimic joint="joint_1" multiplier="-1"/>
+                          <limit effort="50" lower="0.0" upper="0.8" velocity="0.5"/>
+                        </joint>
+                        <joint name="joint_3" type="continuous">
+                          <origin xyz="1 0 0"/>
+                          <axis xyz="0 0 1"/>
+                          <parent link="link_2"/>
+                          <child link="link_3"/>
+                        </joint>
+                        <joint name="joint_4" type="continuous">
+                          <origin xyz="0 1 0"/>
+                          <axis xyz="0 0 1"/>
+                          <parent link="link_3"/>
+                          <child link="link_4"/>
+                          <mimic joint="joint_3" multiplier="-2"/>
+                        </joint>
+                      </robot>)");
+
+  pinocchio::Model model;
+  pinocchio::urdf::buildModelFromXML(filestr, model, false, true);
+
+  BOOST_CHECK(model.nq == 3);
+  BOOST_CHECK(model.nv == 2);
+  BOOST_CHECK(model.nvExtended == 4);
+
+  BOOST_CHECK(
+    model.joints[model.getJointId("joint_2")].idx_q()
+    == model.joints[model.getJointId("joint_1")].idx_q());
+  BOOST_CHECK(
+    model.joints[model.getJointId("joint_4")].idx_q()
+    == model.joints[model.getJointId("joint_3")].idx_q());
+
+  // Check non possible mimic pair
+  std::string filestr1(R"(<?xml version="1.0" encoding="utf-8"?>
+                    <robot name="test">
+                      <link name="base_link"/>
+                      <link name="link_1"/>
+                      <link name="link_2"/>
+                      <joint name="joint_1" type="revolute">
+                        <origin xyz="1 0 0"/>
+                        <axis xyz="0 0 1"/>
+                        <parent link="base_link"/>
+                        <child link="link_1"/>
+                        <limit effort="50" lower="0.0" upper="0.8" velocity="0.5"/>
+                      </joint>
+                      <joint name="joint_4" type="continuous">
+                        <origin xyz="0 1 0"/>
+                        <axis xyz="0 0 1"/>
+                        <parent link="link_1"/>
+                        <child link="link_2"/>
+                        <mimic joint="joint_1" multiplier="-2"/>
+                      </joint>
+                    </robot>)");
+  pinocchio::Model model1;
+  BOOST_CHECK_THROW(
+    pinocchio::urdf::buildModelFromXML(filestr1, model1, false, true), std::invalid_argument);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
