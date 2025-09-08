@@ -356,11 +356,11 @@ BOOST_AUTO_TEST_CASE(test_mimic_parsing)
   BOOST_CHECK(model.nvExtended == 4);
 
   BOOST_CHECK(
-    model.joints[model.getJointId("joint2")].idx_q()
-    == model.joints[model.getJointId("joint1")].idx_q());
+    model.joints[model.getJointId("joint_2")].idx_q()
+    == model.joints[model.getJointId("joint_1")].idx_q());
   BOOST_CHECK(
-    model.joints[model.getJointId("joint4")].idx_q()
-    == model.joints[model.getJointId("joint3")].idx_q());
+    model.joints[model.getJointId("joint_4")].idx_q()
+    == model.joints[model.getJointId("joint_3")].idx_q());
 
   // Check non possible mimic pair
   std::string filestr1(R"(<?xml version="1.0" encoding="utf-8"?>
