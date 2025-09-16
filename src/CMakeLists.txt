@@ -84,6 +84,7 @@ function(PINOCCHIO_TARGET target_name)
   endif()
 
   add_library(${LIB_NAME} ${LIBRARY_TYPE})
+  add_library(${PROJECT_NAME}::${LIB_NAME} ALIAS ${LIB_NAME})
   target_link_libraries(${LIB_NAME} ${LIBRARY_PUBLIC_SCOPE} ${PROJECT_NAME}_headers)
 
   # On CMake 3.16 we can't call target_sources or set_target_properties with LINKER_LANGUAGE,
