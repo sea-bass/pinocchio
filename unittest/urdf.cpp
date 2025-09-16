@@ -8,6 +8,7 @@
 
 #include "pinocchio/multibody/model.hpp"
 #include "pinocchio/parsers/urdf.hpp"
+#include "pinocchio/algorithm/frames.hpp"
 
 #ifdef PINOCCHIO_WITH_HPP_FCL
   #include <hpp/fcl/collision_object.h>
@@ -386,6 +387,48 @@ BOOST_AUTO_TEST_CASE(test_mimic_parsing)
   pinocchio::Model model1;
   BOOST_CHECK_THROW(
     pinocchio::urdf::buildModelFromXML(filestr1, model1, false, true), std::invalid_argument);
+
+  // unaligned joints
+  // Check non possible mimic pair
+  std::string filestr2(R"(<?xml version="1.0" encoding="utf-8"?>
+                    <robot name="test">
+                      <link name="base_link"/>
+                      <link name="link_1"/>
+                      <link name="link_2"/>
+                      <joint name="joint_1" type="revolute">
+                        <origin xyz="1 0 0"/>
+                        <axis xyz="0 0 1"/>
+                        <parent link="base_link"/>
+                        <child link="link_1"/>
+                        <limit effort="50" lower="0.0" upper="0.8" velocity="0.5"/>
+                      </joint>
+                      <joint name="joint_4" type="revolute">
+                        <origin xyz="0 1 0"/>
+                        <axis xyz="0 0 -1"/>
+                        <parent link="link_1"/>
+                        <child link="link_2"/>
+                        <limit effort="50" lower="0.0" upper="0.8" velocity="0.5"/>
+                        <mimic joint="joint_1" multiplier="-2"/>
+                      </joint>
+                    </robot>)");
+  pinocchio::Model model_mimic;
+  pinocchio::Model model_non_mimic;
+
+  pinocchio::urdf::buildModelFromXML(filestr2, model_mimic, false, true);
+  pinocchio::urdf::buildModelFromXML(filestr2, model_non_mimic, false, false);
+
+  Eigen::VectorXd q_mimic(1);
+  q_mimic << 0.2;
+
+  Eigen::Vector2d q_non_mimic;
+  q_non_mimic << 0.2, -0.4;
+
+  pinocchio::Data data_mimic(model_mimic);
+  pinocchio::Data data_non_mimic(model_non_mimic);
+
+  pinocchio::framesForwardKinematics(model_mimic, data_mimic, q_mimic);
+  pinocchio::framesForwardKinematics(model_non_mimic, data_non_mimic, q_non_mimic);
+  BOOST_CHECK(data_mimic.oMi[2].isApprox(data_non_mimic.oMi[2]));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
