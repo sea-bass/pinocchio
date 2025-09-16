@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - CMake: Added support for `BUILD_STANDALONE_PYTHON_INTERFACE` ([#2714](https://github.com/stack-of-tasks/pinocchio/pull/2714))
 
 ### Fixed
+- Set axis of unaligned mimic joint ([#2763](https://github.com/stack-of-tasks/pinocchio/pull/2763))
 - Fixed explicit conversions to Scalar type in log.hxx ([#2730](https://github.com/stack-of-tasks/pinocchio/pull/2730))
 - Check row dimensions of input Jacobians when computing kinematics Jacobian ([#2684](https://github.com/stack-of-tasks/pinocchio/pull/2684))
 - Fix case joint_id == 0 in getJointKinematicHessian ([#2705](https://github.com/stack-of-tasks/pinocchio/pull/2705))
