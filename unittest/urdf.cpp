@@ -389,12 +389,14 @@ BOOST_AUTO_TEST_CASE(test_mimic_parsing)
     pinocchio::urdf::buildModelFromXML(filestr1, model1, false, true), std::invalid_argument);
 
   // unaligned joints
-  // Check non possible mimic pair
   std::string filestr2(R"(<?xml version="1.0" encoding="utf-8"?>
                     <robot name="test">
                       <link name="base_link"/>
                       <link name="link_1"/>
                       <link name="link_2"/>
+                      <link name="link_3"/>
+                      <link name="link_4"/>
+                      <link name="link_5"/>
                       <joint name="joint_1" type="revolute">
                         <origin xyz="1 0 0"/>
                         <axis xyz="0 0 1"/>
@@ -402,33 +404,61 @@ BOOST_AUTO_TEST_CASE(test_mimic_parsing)
                         <child link="link_1"/>
                         <limit effort="50" lower="0.0" upper="0.8" velocity="0.5"/>
                       </joint>
-                      <joint name="joint_4" type="revolute">
+                      <joint name="joint_2" type="revolute">
                         <origin xyz="0 1 0"/>
-                        <axis xyz="0 0 -1"/>
+                        <axis xyz="1 0 0"/>
                         <parent link="link_1"/>
                         <child link="link_2"/>
+                        <limit effort="50" lower="0.0" upper="0.8" velocity="0.5"/>
+                        <mimic joint="joint_1" multiplier="-3"/>
+                      </joint>
+                      <joint name="joint_3" type="revolute">
+                        <origin xyz="0 1 0"/>
+                        <axis xyz="0 1 0"/>
+                        <parent link="link_2"/>
+                        <child link="link_3"/>
+                        <limit effort="50" lower="0.0" upper="0.8" velocity="0.5"/>
+                        <mimic joint="joint_1" multiplier="-3"/>
+                      </joint>
+                      <joint name="joint_4" type="revolute">
+                        <origin xyz="0 1 0"/>
+                        <axis xyz="0 0 1"/>
+                        <parent link="link_3"/>
+                        <child link="link_4"/>
+                        <limit effort="50" lower="0.0" upper="0.8" velocity="0.5"/>
+                        <mimic joint="joint_1" multiplier="-3"/>
+                      </joint>
+                      <joint name="joint_5" type="revolute">
+                        <origin xyz="0 1 0"/>
+                        <axis xyz="0 0 -1"/>
+                        <parent link="link_4"/>
+                        <child link="link_5"/>
                         <limit effort="50" lower="0.0" upper="0.8" velocity="0.5"/>
                         <mimic joint="joint_1" multiplier="-2"/>
                       </joint>
                     </robot>)");
+
   pinocchio::Model model_mimic;
-  pinocchio::Model model_non_mimic;
 
   pinocchio::urdf::buildModelFromXML(filestr2, model_mimic, false, true);
-  pinocchio::urdf::buildModelFromXML(filestr2, model_non_mimic, false, false);
 
-  Eigen::VectorXd q_mimic(1);
-  q_mimic << 0.2;
+  // RX
+  auto j1 = boost::get<pinocchio::JointModelMimic>(model_mimic.joints[2]);
+  BOOST_CHECK(boost::get<pinocchio::JointModelRX>(&j1.jmodel()));
 
-  Eigen::Vector2d q_non_mimic;
-  q_non_mimic << 0.2, -0.4;
+  // RY
+  auto j2 = boost::get<pinocchio::JointModelMimic>(model_mimic.joints[3]);
+  BOOST_CHECK(boost::get<pinocchio::JointModelRY>(&j2.jmodel()));
 
-  pinocchio::Data data_mimic(model_mimic);
-  pinocchio::Data data_non_mimic(model_non_mimic);
+  // RZ
+  auto j3 = boost::get<pinocchio::JointModelMimic>(model_mimic.joints[4]);
+  BOOST_CHECK(boost::get<pinocchio::JointModelRZ>(&j3.jmodel()));
 
-  pinocchio::framesForwardKinematics(model_mimic, data_mimic, q_mimic);
-  pinocchio::framesForwardKinematics(model_non_mimic, data_non_mimic, q_non_mimic);
-  BOOST_CHECK(data_mimic.oMi[2].isApprox(data_non_mimic.oMi[2]));
+  // RU
+  auto j4 = boost::get<pinocchio::JointModelMimic>(model_mimic.joints[5]);
+  BOOST_CHECK(boost::get<pinocchio::JointModelRevoluteUnaligned>(&j4.jmodel()));
+  BOOST_CHECK(boost::get<pinocchio::JointModelRevoluteUnaligned>(j4.jmodel())
+                .axis.isApprox(-1 * Eigen::Vector3d::UnitZ()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
