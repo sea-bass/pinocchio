@@ -540,7 +540,8 @@ namespace pinocchio
             return model.addJoint(
               frame.parentJoint,
               typename JointCollection::JointModelMimic(
-                TypeUnaligned(), mimicked_joint, mimic_info.multiplier, mimic_info.offset),
+                TypeUnaligned(mimic_info.axis.normalized()), mimicked_joint, mimic_info.multiplier,
+                mimic_info.offset),
               frame.placement * placement, joint_name, max_effort, max_velocity, min_config,
               max_config, friction, damping);
             break;
