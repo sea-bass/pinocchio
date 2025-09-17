@@ -274,6 +274,12 @@ endif(BUILD_WITH_AUTODIFF_SUPPORT)
 
 if(BUILD_WITH_CASADI_SUPPORT)
   add_project_dependency(casadi 3.4.5 REQUIRED PKG_CONFIG_REQUIRES "casadi >= 3.4.5")
+
+  # Normalize CasADi link target across versions. Prefer imported target (casadi::casadi), then
+  # legacy target (casadi)
+  if(NOT TARGET casadi::casadi AND TARGET casadi)
+    add_library(casadi::casadi ALIAS casadi)
+  endif()
   list(APPEND LIBRARIES_DEPENDENCIES ${PROJECT_NAME}_casadi)
 endif(BUILD_WITH_CASADI_SUPPORT)
 

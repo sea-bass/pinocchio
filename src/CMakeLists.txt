@@ -359,7 +359,7 @@ endif()
 # Define casadi target.
 if(BUILD_WITH_CASADI_SUPPORT)
   pinocchio_specific_type(casadi CASADI_SCOPE)
-  target_link_libraries(${PROJECT_NAME}_casadi ${CASADI_SCOPE} casadi)
+  target_link_libraries(${PROJECT_NAME}_casadi ${CASADI_SCOPE} casadi::casadi)
 endif()
 
 if(BUILD_WITH_PYTHON_PARSER_SUPPORT)
