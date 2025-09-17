@@ -281,26 +281,9 @@ if(BUILD_WITH_CASADI_SUPPORT)
     set(CASADI_TARGET casadi::casadi)
   elseif(TARGET casadi)
     set(CASADI_TARGET casadi)
-  elseif(DEFINED CASADI_LIBRARIES)
-    set(CASADI_TARGET ${CASADI_LIBRARIES})
-  elseif(DEFINED casadi_LIBRARIES)
-    set(CASADI_TARGET ${casadi_LIBRARIES})
   else()
     message(FATAL_ERROR "CasADi found but no usable target or libraries variable exported.")
   endif()
-
-  # Expose to subdirectories and cache for external use if needed.
-  set(CASADI_TARGET "${CASADI_TARGET}" CACHE STRING "CasADi target to link" FORCE)
-
-  # Optional: propagate include dirs only when not using imported targets.
-  if(NOT TARGET casadi::casadi AND NOT TARGET casadi)
-    if(DEFINED CASADI_INCLUDE_DIRS)
-      set(CASADI_INCLUDE_DIRS_NORMALIZED "${CASADI_INCLUDE_DIRS}" CACHE PATH "CasADi include dirs" FORCE)
-    elseif(DEFINED casadi_INCLUDE_DIRS)
-      set(CASADI_INCLUDE_DIRS_NORMALIZED "${casadi_INCLUDE_DIRS}" CACHE PATH "CasADi include dirs" FORCE)
-    endif()
-  endif()
-
   list(APPEND LIBRARIES_DEPENDENCIES ${PROJECT_NAME}_casadi)
 endif(BUILD_WITH_CASADI_SUPPORT)
 
