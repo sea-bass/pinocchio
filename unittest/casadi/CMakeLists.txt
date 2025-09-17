@@ -3,7 +3,7 @@
 #
 
 macro(ADD_CASADI_UNIT_TEST name)
-  add_pinocchio_unit_test(${name} PACKAGES ${CASADI_TARGET})
+  add_pinocchio_unit_test(${name} PACKAGES casadi::casadi)
   get_cpp_test_name(${name} ${CMAKE_CURRENT_SOURCE_DIR} TEST_NAME)
   set_tests_properties(${TEST_NAME} PROPERTIES TIMEOUT 3000)
   add_dependencies(${PROJECT_NAME}-test-casadi ${TEST_NAME})

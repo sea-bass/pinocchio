@@ -225,7 +225,7 @@ if(BUILD_PYTHON_INTERFACE)
 
   if(BUILD_WITH_CASADI_SUPPORT)
     pinocchio_python_bindings_specific_type(casadi)
-    target_link_libraries(${PYWRAP}_casadi PUBLIC ${CASADI_TARGET})
+    target_link_libraries(${PYWRAP}_casadi PUBLIC casadi::casadi)
     list(APPEND STUBGEN_DEPENDENCIES "${PYWRAP}_casadi")
 
     target_precompile_headers(
