@@ -2,6 +2,8 @@ name: CI - Linux via APT
 
 on:
   push:
+    branches:
+      - devel
     paths-ignore:
       - doc/**
       - .gitlab-ci.yml
@@ -31,6 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
     strategy:
+      fail-fast: false
       matrix:
         container: ['ubuntu:22.04', 'ubuntu:24.04']
 

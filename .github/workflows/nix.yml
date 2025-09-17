@@ -3,17 +3,14 @@ name: "CI - Nix"
 on:
   push:
     branches:
-      - master
       - devel
   pull_request:
-    branches:
-      - master
-      - devel
 
 jobs:
   nix-full:
     runs-on: "${{ matrix.os }}-latest"
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu, macos]
     steps:
