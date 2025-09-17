@@ -43,6 +43,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix copy of Model.armature in buidlReducedModel(...) ([#2749](https://github.com/stack-of-tasks/pinocchio/pull/2749))
 - Add site attached to a fixed body in MJCF parse ([#2754](https://github.com/stack-of-tasks/pinocchio/pull/2754))
 - Fix Viser visualizer loading DAE files as trimesh.Scene ([#2748](https://github.com/stack-of-tasks/pinocchio/pull/2748))
+- Normalize CasADi link target across versions ([#2743](https://github.com/stack-of-tasks/pinocchio/pull/2743))
 
 ### Changed
 - Disable coal/hpp-fcl warnings when building Pinocchio ([#2686](https://github.com/stack-of-tasks/pinocchio/pull/2686))
