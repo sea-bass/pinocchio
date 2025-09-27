@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- Homogenize python viewers examples ([#2771](https://github.com/stack-of-tasks/pinocchio/pull/2771))
+
 ## [3.8.0] - 2025-09-17
 
 ### Added
