@@ -21,7 +21,12 @@
         {
           apps.default = {
             type = "app";
-            program = pkgs.python3.withPackages (_: [ self'.packages.default ]);
+            program = pkgs.python3.withPackages (p: [
+              self'.packages.default
+              p.example-robot-data
+              p.meshcat
+              p.viser
+            ]);
           };
           packages = {
             default = self'.packages.pinocchio;
