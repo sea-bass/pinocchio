@@ -161,6 +161,12 @@ You simply need this simple line:
 conda install pinocchio -c conda-forge
 ```
 
+### Docker
+
+```
+docker run --rm -it ghcr.io/stack-of-tasks/pinocchio:devel
+```
+
 ### ROS
 
 **Pinocchio** is also deployed on ROS.
