@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, macos-13]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, macos-15-intel]
         environment: [all, all-py39]
         build_type: [Release, Debug]
 
@@ -58,7 +58,7 @@ jobs:
             BUILD_ADVANCED_TESTING: OFF
           - os: macos-latest
             BUILD_ADVANCED_TESTING: OFF
-          - os: macos-13
+          - os: macos-15-intel
             BUILD_ADVANCED_TESTING: OFF
           - os: windows-latest
             environment: all
