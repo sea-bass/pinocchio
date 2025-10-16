@@ -485,14 +485,14 @@ namespace pinocchio
       return res;
     }
 
-    int getJointIndex(const std::string & joint_name) const
+    JointIndex getJointId(const std::string & joint_name) const
     {
       auto it = std::find(jointNames.begin(), jointNames.end(), joint_name);
 
       if (it == jointNames.end())
-        return -1;
-      else
-        return static_cast<int>(std::distance(jointNames.begin(), it));
+        PINOCCHIO_THROW_PRETTY(std::invalid_argument, "JointComposite - joint_name not found");
+
+      return JointIndex(std::distance(jointNames.begin(), it));
     }
 
     /// \brief Vector of joints contained in the joint composite.
