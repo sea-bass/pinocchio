@@ -241,7 +241,7 @@ namespace pinocchio
     JointModelCompositeTpl(
       const JointModelBase<JointModel> & jmodel,
       const SE3 & placement = SE3::Identity(),
-      const std::string & name = "joint_0")
+      const std::string & name = "joint_1")
     : joints(1, (JointModelVariant)jmodel.derived())
     , jointPlacements(1, placement)
     , m_nq(jmodel.nq())
@@ -309,7 +309,7 @@ namespace pinocchio
       std::string final_name = name;
       if (name.empty())
       {
-        final_name = "joint_" + std::to_string(njoints);
+        final_name = "joint_" + std::to_string(njoints + 1);
       }
       jointNames.push_back(final_name);
 
