@@ -38,6 +38,7 @@ namespace pinocchio
         Visualizer & vis, const std::vector<visualizers::VectorXs> & qs, context::Scalar dt)
       {
         std::vector<visualizers::ConstVectorRef> qs_;
+        qs_.reserve(qs.size());
         for (size_t i = 0; i < qs.size(); i++)
         {
           qs_.emplace_back(qs[i]);
