@@ -329,14 +329,14 @@ namespace pinocchio
     static context::JointModelComposite * init_proxy1(const context::JointModel & jmodel)
     {
       return boost::apply_visitor(
-        JointModelCompositeConstructorVisitor(context::SE3::Identity(), "joint_0"), jmodel);
+        JointModelCompositeConstructorVisitor(context::SE3::Identity(), "joint_1"), jmodel);
     }
 
     static context::JointModelComposite *
     init_proxy2(const context::JointModel & jmodel, const context::SE3 & joint_placement)
     {
       return boost::apply_visitor(
-        JointModelCompositeConstructorVisitor(joint_placement, "joint_0"), jmodel);
+        JointModelCompositeConstructorVisitor(joint_placement, "joint_1"), jmodel);
     }
 
     static context::JointModelComposite * init_proxy3(
