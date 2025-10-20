@@ -376,8 +376,11 @@ namespace pinocchio
         .def(
           "addJoint", &addJoint_proxy,
           (bp::arg("self"), bp::arg("joint_model"),
-           bp::arg("joint_placement") = context::SE3::Identity(), bp::arg("name") = ""),
+           bp::arg("joint_placement") = context::SE3::Identity(), bp::arg("name") = "joint_1"),
           "Add a joint to the vector of joints.", bp::return_internal_reference<>())
+        .def(
+          "getJointId", &context::JointModelComposite::getJointId, bp::args("joint_name"),
+          "Find the index of a joint inside a joint composite based on its name.")
 
 #ifndef PINOCCHIO_PYTHON_SKIP_COMPARISON_OPERATIONS
         .def(bp::self == bp::self)
