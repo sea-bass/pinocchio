@@ -83,17 +83,19 @@ or via pip (currently only available on Linux):
    - support of modern and open-source Automatic Differentiation frameworks like [CppAD](https://github.com/coin-or/CppAD) or [CasADi](https://web.casadi.org/),
    - automatic code generation support is available via [CppADCodeGen](https://github.com/joaoleal/CppADCodeGen).
 
-**Pinocchio** can create Multi-body system from:
+**Pinocchio** can support description formats:
 
-  - URDF file,
-  - SDF file,
-  - MJCF file,
-  - SRDF file to add frame and contact.
+  - URDF format,
+  - SDF format,
+  - MJCF format,
+  - SRDF format,
+  - programmatically.
 
 **Pinocchio** is flexible:
 
    - header only,
-   - C++ 11/14/17/20 compliant.
+   - template instantiation,
+   - C++ 11/14/17/20/23 compliant.
 
 **Pinocchio** is extensible.
 **Pinocchio** is multi-thread friendly.
