@@ -229,7 +229,7 @@ if(BUILD_WITH_URDF_SUPPORT)
 endif()
 
 if(BUILD_WITH_SDF_SUPPORT)
-  include(${CMAKE_CURRENT_LIST_DIR}/cmake/sdformat.cmake)
+  include(${JRL_CMAKE_MODULES}/sdformat.cmake)
   search_for_sdformat(REQUIRED)
   if(SDFormat_FOUND)
     check_minimal_cxx_standard(11 REQUIRED)
