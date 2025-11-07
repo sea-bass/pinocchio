@@ -10,15 +10,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-- Homogenize python viewers examples ([#2771](https://github.com/stack-of-tasks/pinocchio/pull/2771))
-- Add docker images ([#2776](https://github.com/stack-of-tasks/pinocchio/pull/2776))
+### Added
+- Add pixi-build support ([#2802](https://github.com/stack-of-tasks/pinocchio/pull/2802))
+- Python: add overload of `BaseVisualizer::play()` to `VisualizerPythonVisitor` ([#2796](https://github.com/stack-of-tasks/pinocchio/pull/2796))
 - ROS: added jrl_cmakemodules dependency ([#2789](https://github.com/stack-of-tasks/pinocchio/pull/2789))
-- Removed CMake < 3.22 details ([#2790](https://github.com/stack-of-tasks/pinocchio/pull/2790))
-- Python : add overload of `BaseVisualizer::play()` to `VisualizerPythonVisitor` ([#2796](https://github.com/stack-of-tasks/pinocchio/pull/2796))
+- Add docker images ([#2776](https://github.com/stack-of-tasks/pinocchio/pull/2776))
+- Add names to joints that are inside a composite joint ([#2786](https://github.com/stack-of-tasks/pinocchio/pull/2786))
+
+### Changed
+- Python version update ([#2802](https://github.com/stack-of-tasks/pinocchio/pull/2802)):
+  - Project is now tested with Python 3.10 and 3.14
+  - Python 3.10 is the minimal supported Python version
+- Homogenize python viewers examples ([#2771](https://github.com/stack-of-tasks/pinocchio/pull/2771))
+
+### Fixed
+- Remove pixi 0.57 warnings ([#2802](https://github.com/stack-of-tasks/pinocchio/pull/2802))
 - CMake: use `sdformat.cmake` from `jrl-cmakemodules` ([#2800](https://github.com/stack-of-tasks/pinocchio/pull/2800))
 
-### Added
-- Add names to joints that are inside a composite joint ([#2786](https://github.com/stack-of-tasks/pinocchio/pull/2786))
+### Removed
+- Remove CMake < 3.22 details ([#2790](https://github.com/stack-of-tasks/pinocchio/pull/2790))
+
 
 ## [3.8.0] - 2025-09-17
 
