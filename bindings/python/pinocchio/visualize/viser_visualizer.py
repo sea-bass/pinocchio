@@ -1,4 +1,5 @@
 import time
+from pathlib import Path
 
 try:
     import hppfcl
@@ -11,8 +12,10 @@ from .. import pinocchio_pywrap_default as pin
 from . import BaseVisualizer
 
 try:
+    import collada
     import trimesh  # Required by viser
     import viser
+
 except ImportError:
     import_viser_succeed = False
 else:
@@ -38,8 +41,8 @@ class ViserVisualizer(BaseVisualizer):
         if not import_viser_succeed:
             msg = (
                 "Error while importing the viewer client.\n"
-                "Check whether viser is properly installed "
-                "(pip install --user viser)."
+                "Check whether viser and its dependencies are properly installed.\n"
+                "Required packages: viser, trimesh, pycollada\n"
             )
             raise ImportError(msg)
 
@@ -214,20 +217,99 @@ class ViserVisualizer(BaseVisualizer):
 
         self.frames[name] = frame
 
-    def _add_mesh_from_path(self, name, mesh_path, color):
+    def _add_mesh_from_path(self, name, mesh_path, color=None):
         """
         Load a mesh from a file.
+        """
+        ext = Path(mesh_path).suffix.lower()
+
+        if ext == ".dae":
+            return self._load_collada_mesh(name, mesh_path, color)
+        else:
+            return self._load_standard_mesh(name, mesh_path, color)
+
+    def _load_collada_mesh(self, name, mesh_path, color):
+        """
+        Load a COLLADA mesh with color support.
+        """
+        try:
+            mesh_collada = collada.Collada(mesh_path)
+        except collada.DaeError:
+            return self._load_standard_mesh(name, mesh_path, color)
+
+        if len(mesh_collada.effects) < len(mesh_collada.geometries):
+            return self._load_standard_mesh(name, mesh_path, color)
+
+        frames = []
+        for i, (geometry, effect) in enumerate(
+            zip(mesh_collada.geometries, mesh_collada.effects)
+        ):
+            frame = self._process_collada_geometry(
+                name, i, geometry, effect, color, mesh_path
+            )
+            if frame:
+                frames.append(frame)
+
+        return frames[0] if frames else None
+
+    def _process_collada_geometry(
+        self, name, index, geometry, effect, fallback_color, mesh_path
+    ):
+        """
+        Process a single COLLADA geometry with its material.
+        """
+        try:
+            vertices, faces = self._extract_geometry_data(geometry)
+        except (AttributeError, IndexError, KeyError):
+            mesh = trimesh.load_mesh(mesh_path)
+            return self.viewer.scene.add_mesh_trimesh(f"{name}_{index}", mesh)
+
+        mesh_color = getattr(effect, "diffuse", None)
+
+        if mesh_color is not None:
+            return self.viewer.scene.add_mesh_simple(
+                f"{name}_{index}",
+                vertices,
+                faces,
+                color=mesh_color[:3],
+                opacity=mesh_color[3],
+            )
+        elif fallback_color is not None:
+            return self.viewer.scene.add_mesh_simple(
+                f"{name}_{index}",
+                vertices,
+                faces,
+                color=fallback_color[:3],
+                opacity=fallback_color[3],
+            )
+        else:
+            mesh = trimesh.load_mesh(mesh_path)
+            return self.viewer.scene.add_mesh_trimesh(f"{name}_{index}", mesh)
+
+    def _extract_geometry_data(self, geometry):
+        """
+        Extract vertices and faces from a COLLADA geometry.
+        """
+        vertices = geometry.primitives[0].sources["VERTEX"][0][4].data
+        indices = geometry.primitives[0].indices
+
+        if indices.ndim == 3:
+            faces = indices[:, :, 0]
+        else:
+            faces = indices.reshape(-1, 3)
+
+        return vertices, faces
+
+    def _load_standard_mesh(self, name, mesh_path, color):
+        """
+        Load a mesh using trimesh (STL and other formats).
         """
         mesh = trimesh.load_mesh(mesh_path)
         if color is None:
             return self.viewer.scene.add_mesh_trimesh(name, mesh)
         else:
             return self.viewer.scene.add_mesh_simple(
-                name,
-                mesh.vertices,
-                mesh.faces,
-                color=color[:3],
-                opacity=color[3],
+                name, mesh.vertices, mesh.faces, color=color[:3], opacity=color[3]
             )
 
     def _add_mesh_from_convex(self, name, geom, color):
