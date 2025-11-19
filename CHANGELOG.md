@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - ROS: added jrl_cmakemodules dependency ([#2789](https://github.com/stack-of-tasks/pinocchio/pull/2789))
 - Add docker images ([#2776](https://github.com/stack-of-tasks/pinocchio/pull/2776))
 - Add names to joints that are inside a composite joint ([#2786](https://github.com/stack-of-tasks/pinocchio/pull/2786))
+- Add color support for robot meshes in Viser ([#2793](https://github.com/stack-of-tasks/pinocchio/pull/2793))
 
 ### Changed
 - Python version update ([#2802](https://github.com/stack-of-tasks/pinocchio/pull/2802)):
