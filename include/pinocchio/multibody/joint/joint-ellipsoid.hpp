@@ -192,7 +192,7 @@ namespace pinocchio
     /// @param[in] c2, s2 Cosine and sine of q[2]
     /// @param[out] data Joint data where M will be stored
     void computeSpatialTransform(
-      Scalar c0, Scalar s0, Scalar c1, Scalar s1, Scalar c2, Scalar s2, JointDataDerived & data)
+      const Scalar& c0, const Scalar& s0, const Scalar& c1, const Scalar& s1, const Scalar& c2, const Scalar& s2, JointDataDerived & data) const
       const
     {
       // clang-format off
