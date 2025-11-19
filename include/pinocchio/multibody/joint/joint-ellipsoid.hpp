@@ -112,7 +112,6 @@ namespace pinocchio
 
   }; // struct JointDataEllipsoidTpl
 
-
   PINOCCHIO_JOINT_CAST_TYPE_SPECIALIZATION(JointModelEllipsoidTpl);
   /// \brief Ellipsoid joint - constrains motion to ellipsoid surface with 3-DOF.
   ///
@@ -193,8 +192,13 @@ namespace pinocchio
     /// @param[in] c2, s2 Cosine and sine of q[2]
     /// @param[out] data Joint data where M will be stored
     void computeSpatialTransform(
-      const Scalar& c0, const Scalar& s0, const Scalar& c1, const Scalar& s1, const Scalar& c2, const Scalar& s2, JointDataDerived & data) const
-      const
+      const Scalar & c0,
+      const Scalar & s0,
+      const Scalar & c1,
+      const Scalar & s1,
+      const Scalar & c2,
+      const Scalar & s2,
+      JointDataDerived & data) const
     {
       // clang-format off
       data.M.rotation() << c1 * c2                , -c1 * s2                , s1      ,

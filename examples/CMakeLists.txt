@@ -97,8 +97,7 @@ if(BUILD_PYTHON_INTERFACE)
       inverse-dynamics-derivatives
       model-graph
       model-configuration-converter
-      ellipsoid-joint-kinematics
-      )
+      ellipsoid-joint-kinematics)
 
   if(BUILD_WITH_URDF_SUPPORT)
     list(

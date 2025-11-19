@@ -256,7 +256,6 @@ namespace pinocchio
 
   }; // struct JointDataFreeFlyerTpl
 
-  
   PINOCCHIO_JOINT_CAST_TYPE_SPECIALIZATION(JointModelFreeFlyerTpl);
   /// @brief Free-flyer joint in \f$SE(3)\f$.
   ///
