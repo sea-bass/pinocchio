@@ -288,7 +288,8 @@ In addition to the core dev team, the following people have also been involved i
 -   [Lev Kozlov](https://github.com/lvjonok): Kinetic and potential energy regressors
 -   [Simeon Nedelchev](https://github.com/simeon-ned): Pseudo inertia and Log-Cholesky parametrization
 -   [Alexy Legrand](https://www.linkedin.com/in/alexy-legrand-125889232/): Viser color bug fixes
--   [Pierre Puchaud](https://github.com/ipuch) & [Lucas Joseph](https://github.com/LucasJoseph): Ellipsoid Joint
+-   [Pierre Puchaud](https://github.com/ipuch): Ellipsoid Joint
+-   [Lucas Joseph](https://github.com/LucasJoseph): Ellipsoid Joint
 
 If you have participated in the development of **Pinocchio**, please add your name and contribution to this list.
 

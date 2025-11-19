@@ -65,25 +65,6 @@ namespace pinocchio
     typedef _Scalar Scalar;
   };
 
-  /// \brief Ellipsoid joint - constrains motion to ellipsoid surface with 3-DOF.
-  ///
-  /// The configuration space uses three angles (q₀, q₁, q₂) representing:
-  /// - Rotation about the x-axis
-  /// - Rotation about the y-axis
-  /// - Spin about the "normal" direction
-  ///
-  /// The joint position on the ellipsoid surface is computed as:
-  /// \f$ \mathbf{p} = (a \sin q_1, -b \sin q_0 \cos q_1, c \cos q_0 \cos q_1) \f$
-  ///
-  /// where \f$ a, b, c \f$ are the radii along the x, y, z axes respectively.
-  ///
-  /// \note For non-spherical ellipsoids, the third rotation axis is only approximately
-  /// normal to the surface. It corresponds to the normal of an equivalent sphere while
-  /// the translation follows the true ellipsoid surface. The "normal" direction is
-  /// truly normal only when all radii are equal (sphere case).
-  ///
-  /// \sa Seth et al., "Minimal formulation of joint motion for biomechanisms,"
-  /// Nonlinear Dynamics 62(1):291-303, 2010.
   template<typename _Scalar, int _Options>
   struct JointDataEllipsoidTpl : public JointDataBase<JointDataEllipsoidTpl<_Scalar, _Options>>
   {
@@ -131,7 +112,27 @@ namespace pinocchio
 
   }; // struct JointDataEllipsoidTpl
 
+
   PINOCCHIO_JOINT_CAST_TYPE_SPECIALIZATION(JointModelEllipsoidTpl);
+  /// \brief Ellipsoid joint - constrains motion to ellipsoid surface with 3-DOF.
+  ///
+  /// The configuration space uses three angles (q₀, q₁, q₂) representing:
+  /// - Rotation about the x-axis
+  /// - Rotation about the y-axis
+  /// - Spin about the "normal" direction
+  ///
+  /// The joint position on the ellipsoid surface is computed as:
+  /// \f$ \mathbf{p} = (a \sin q_1, -b \sin q_0 \cos q_1, c \cos q_0 \cos q_1) \f$
+  ///
+  /// where \f$ a, b, c \f$ are the radii along the x, y, z axes respectively.
+  ///
+  /// \note For non-spherical ellipsoids, the third rotation axis is only approximately
+  /// normal to the surface. It corresponds to the normal of an equivalent sphere while
+  /// the translation follows the true ellipsoid surface. The "normal" direction is
+  /// truly normal only when all radii are equal (sphere case).
+  ///
+  /// \sa Seth et al., "Minimal formulation of joint motion for biomechanisms,"
+  /// Nonlinear Dynamics 62(1):291-303, 2010.
   template<typename _Scalar, int _Options>
   struct JointModelEllipsoidTpl : public JointModelBase<JointModelEllipsoidTpl<_Scalar, _Options>>
   {
@@ -324,11 +325,12 @@ namespace pinocchio
     }
 
     /// \returns An expression of *this with the Scalar type casted to NewScalar.
+    /// TU todo.
     template<typename NewScalar>
     JointModelEllipsoidTpl<NewScalar, Options> cast() const
     {
       typedef JointModelEllipsoidTpl<NewScalar, Options> ReturnType;
-      ReturnType res;
+      ReturnType res(radius_a, radius_b, radius_c);
       res.setIndexes(id(), idx_q(), idx_v(), idx_vExtended());
       return res;
     }

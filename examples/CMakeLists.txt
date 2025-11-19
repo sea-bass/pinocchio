@@ -96,7 +96,9 @@ if(BUILD_PYTHON_INTERFACE)
       forward-dynamics-derivatives
       inverse-dynamics-derivatives
       model-graph
-      model-configuration-converter)
+      model-configuration-converter
+      ellipsoid-joint-kinematics
+      )
 
   if(BUILD_WITH_URDF_SUPPORT)
     list(
