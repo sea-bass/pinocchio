@@ -248,6 +248,8 @@ namespace pinocchio
                 modelAB, model, modelAB.frames[frame.parentFrame].name,
                 modelAB.frames[frame.parentFrame].type);
             }
+            // Inertias are already computed in modelAB.inertias[joint_id_in].
+            // No need to append them again.
             model.addFrame(frame, false);
           }
         }
