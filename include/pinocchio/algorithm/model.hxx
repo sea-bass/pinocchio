@@ -102,14 +102,9 @@ namespace pinocchio
 
           // Modify frame placement
           frame.placement = pframe.placement * pfMAB * frame.placement;
-          // Some frames may have some inertia attached to them. In this case, we need to remove it
-          // from the parent joint. To prevent introducing NaNs, we check if the frame inertia is
-          // not NaN and is not zero.
-          if (frame.inertia == frame.inertia && frame.inertia != Inertia::Zero())
-          {
-            model.inertias[frame.parentJoint] -= frame.inertia;
-          }
-          model.addFrame(frame);
+          // Inertias are already computed in model.appendBodyToJoint call.
+          // No need to append them again.
+          model.addFrame(frame, false);
         }
       }
 
