@@ -1098,4 +1098,30 @@ BOOST_AUTO_TEST_CASE(test_has_configuration_limit_mimic)
   BOOST_CHECK_EQUAL(model.hasConfigurationLimitInTangent().size(), 2);
 }
 
+// Non regression test for: https://github.com/stack-of-tasks/pinocchio/issues/2805
+// When a frame with non null placement have inertia, the inertia was not well transformed
+// in the support joint.
+BOOST_AUTO_TEST_CASE(test_append_model_issue_2805)
+{
+  // Create robot with a fixed joint
+  Model model_fixed_joint;
+  Inertia I(1000, Eigen::Vector3d::Zero(), Eigen::Matrix3d::Identity() * 166);
+  SE3 translation(Eigen::Matrix3d::Identity(), Eigen::Vector3d::UnitX());
+  auto root_joint_index = model_fixed_joint.addJoint(
+    0, pinocchio::JointModel(pinocchio::JointModelFreeFlyer()), SE3::Identity(), "root_joint");
+  auto root_joint_frame_index =
+    model_fixed_joint.addFrame(Frame("root_joint", root_joint_index, 0, SE3::Identity(), JOINT));
+  auto link_1_index = model_fixed_joint.addFrame(
+    Frame("link_1", root_joint_index, root_joint_frame_index, SE3::Identity(), BODY, I));
+  auto joint1_fixed_index = model_fixed_joint.addFrame(
+    Frame("urdf_joint_1fixed", root_joint_index, link_1_index, translation, FIXED_JOINT));
+  model_fixed_joint.addFrame(
+    Frame("link_2", root_joint_index, joint1_fixed_index, translation, BODY, I));
+
+  Model model_root;
+  auto new_model = appendModel(model_root, model_fixed_joint, 0, SE3::Identity());
+
+  BOOST_CHECK(new_model.inertias[1].isApprox(model_fixed_joint.inertias[1]));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
