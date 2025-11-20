@@ -1124,4 +1124,49 @@ BOOST_AUTO_TEST_CASE(test_append_model_issue_2805)
   BOOST_CHECK(new_model.inertias[1].isApprox(model_fixed_joint.inertias[1]));
 }
 
+// Non regression test for: https://github.com/stack-of-tasks/pinocchio/issues/2805
+// Same test as above but verify the special case of frame attached to universe frame.
+BOOST_AUTO_TEST_CASE(test_append_model_universe_with_inertia_issue_2805)
+{
+  Inertia I(1000, Eigen::Vector3d::Zero(), Eigen::Matrix3d::Identity() * 166);
+  SE3 translation_root_joint(Eigen::Matrix3d::Identity(), Eigen::Vector3d::UnitX());
+  SE3 translation_fixed_link_1(Eigen::Matrix3d::Identity(), Eigen::Vector3d::UnitY());
+  SE3 translation_fixed_link_2(Eigen::Matrix3d::Identity(), Eigen::Vector3d(1., 0., 1.));
+  SE3 translation_AB(Eigen::Matrix3d::Identity(), Eigen::Vector3d::UnitZ());
+
+  // Base model
+  Model model_a;
+  auto model_a_root_joint_index = model_a.addJoint(
+    0, pinocchio::JointModel(pinocchio::JointModelFreeFlyer()), SE3::Identity(), "root_joint");
+  auto model_a_root_joint_frame = model_a.addFrame(
+    Frame("root_joint", model_a_root_joint_index, 0, translation_root_joint, JOINT));
+
+  //  Model with frame and inertia attached to universe.
+  //  To reproduce the issue, we must have two frame with inertia attached to universe.
+  //  With only one frame, some computation will give a 0 mass inertia that will hide the bug.
+  Model model_b;
+  model_b.addFrame(Frame("fixed_link_1", 0, 0, translation_fixed_link_1, BODY, I));
+  model_b.addFrame(Frame("fixed_link_2", 0, 0, translation_fixed_link_2, BODY, I));
+
+  Model expected_model;
+  auto expected_model_root_joint_index = expected_model.addJoint(
+    0, pinocchio::JointModel(pinocchio::JointModelFreeFlyer()), SE3::Identity(), "root_joint");
+  auto expected_model_root_joint_frame_index = expected_model.addFrame(
+    Frame("root_joint", expected_model_root_joint_index, 0, translation_root_joint, JOINT));
+  auto fixed_link_1_frame_index = expected_model.addFrame(Frame(
+    "fixed_link_1", expected_model_root_joint_index, expected_model_root_joint_frame_index,
+    translation_root_joint.act(translation_AB.act(translation_fixed_link_1)), BODY, I));
+  auto fixed_link_2_frame_index = expected_model.addFrame(Frame(
+    "fixed_link_2", expected_model_root_joint_index, expected_model_root_joint_frame_index,
+    translation_root_joint.act(translation_AB.act(translation_fixed_link_2)), BODY, I));
+
+  // Test frame position and inertias attached to root_joint
+  auto new_model = appendModel(model_a, model_b, model_a_root_joint_frame, translation_AB);
+  BOOST_CHECK(new_model.frames[fixed_link_1_frame_index].placement.isApprox(
+    expected_model.frames[fixed_link_1_frame_index].placement));
+  BOOST_CHECK(new_model.frames[fixed_link_2_frame_index].placement.isApprox(
+    expected_model.frames[fixed_link_2_frame_index].placement));
+  BOOST_CHECK(new_model.inertias[1].isApprox(expected_model.inertias[1]));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
