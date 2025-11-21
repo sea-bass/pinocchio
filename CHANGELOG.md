@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - Remove pixi 0.57 warnings ([#2802](https://github.com/stack-of-tasks/pinocchio/pull/2802))
 - CMake: use `sdformat.cmake` from `jrl-cmakemodules` ([#2800](https://github.com/stack-of-tasks/pinocchio/pull/2800))
+- Fix doxygen document hierarchy ([#2811](https://github.com/stack-of-tasks/pinocchio/pull/2811))
 
 ### Removed
 - Remove CMake < 3.22 details ([#2790](https://github.com/stack-of-tasks/pinocchio/pull/2790))
