@@ -1,4 +1,4 @@
-\page md_doc_a-features_c-joints Joints
+# Joints {#md_doc_a-features_c-joints}
 
 Within a model, a robot is represented as a kinematic tree, containing a
 collection of all the joints, information about their connectivity, and,
