@@ -1,6 +1,6 @@
 # How to implement a new joint in Pinocchio {#md_doc_e-dev_impl-new-joint}
 
-**Tags:** #Pinocchio #tutorial #joints #implementation #motionsubspace 
+**Tags:** #Pinocchio #tutorial #joints #implementation #motionsubspace
 
 This guide provides a comprehensive, step-by-step approach to implementing a new joint type in Pinocchio. It covers mathematical foundations, core implementation, parser integration, and testing requirements.
 
@@ -146,7 +146,7 @@ First, determine your joint's configuration and velocity spaces:
 
 ### 1.2 Derive the Spatial Transform
 
-Compute the spatial transformation matrix from parent frame **p** to child frame **c**:  
+Compute the spatial transformation matrix from parent frame **p** to child frame **c**:
 \f[
 {^p}X_c(q) = \begin{bmatrix} R(q) & 0 \\ -R(q)p(q)^\times & R(q) \end{bmatrix}
 \f]
@@ -204,11 +204,11 @@ Or equivalently:
 > [!TIP]
 > Use symbolic computation tools (SymPy, Mathematica) to derive these expressions. The math can become complex quickly, especially for \f$\dot{S}\f$.
 > ```python
-> Sdot = sp.Matrix.zeros(6, 3)  
-> for i in range(3):  
->     for j in range(3):  
+> Sdot = sp.Matrix.zeros(6, 3)
+> for i in range(3):
+>     for j in range(3):
 >         Sdot[:, i] += sp.diff(S[:, i], q[j]) * qdot[j]
-> ``` 
+> ```
 
 ---
 ## Step 2: Core Joint Implementation
@@ -739,7 +739,7 @@ if (joint.same_direction) {
 // Copy configuration
 q_target.template segment<JointModel::NQ>(offset_target) =
 q_source.template segment<JointModel::NQ>(offset_source);
-} else 
+} else
 {
 // Reverse configuration (e.g., negate angles)
 q_target.template segment<JointModel::NQ>(offset_target) =
@@ -759,7 +759,7 @@ v_target.template segment<JointModel::NV>(offset_target) =
 v_source.template segment<JointModel::NV>(offset_source);
 } else {
 // Reverse velocity
-v_target.template segment<JointModel::NV>(offset_target) 
+v_target.template segment<JointModel::NV>(offset_target)
 -v_source.template segment<JointModel::NV>(offset_source);
 }
 }
@@ -1054,7 +1054,7 @@ As a concrete example, the Ellipsoid joint implementation demonstrates:
 - **Motion subspace**: Dense 6×3 matrix (uses `JointMotionSubspaceTpl`)
 - **Reversal**: Not supported (motion subspace is frame-dependent)
 - **Testing**: Compared against SphericalZYX for rotation equivalence
-  
+
 Key files to review:
 - [`joint-ellipsoid.hpp`](include/pinocchio/multibody/joint/joint-ellipsoid.hpp)
 - [`unittest/joint-ellipsoid.cpp`](unittest/joint-ellipsoid.cpp)

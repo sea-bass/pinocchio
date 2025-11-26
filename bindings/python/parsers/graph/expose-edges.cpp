@@ -66,9 +66,8 @@ namespace pinocchio
       bp::class_<JointFixed>(
         "JointFixed", "Represents a fixed joint in the graph.",
         bp::init<>(bp::args("self"), "Default constructor."))
-        .def(
-          bp::init<const pinocchio::SE3 &>(
-            bp::args("self", "pose"), "Constructor with joint offset."))
+        .def(bp::init<const pinocchio::SE3 &>(
+          bp::args("self", "pose"), "Constructor with joint offset."))
         .def_readwrite("joint_offset", &JointFixed::joint_offset, "Offset of the joint.")
         .def_readonly("nq", &JointFixed::nq, "Number of configuration variables.")
         .def_readonly("nv", &JointFixed::nv, "Number of tangent variables.");
@@ -118,9 +117,8 @@ namespace pinocchio
       bp::class_<JointEllipsoid>(
         "JointEllipsoid", "Represents an ellipsoidal joint.",
         bp::init<>(bp::args("self"), "Default constructor."))
-        .def(
-          bp::init<double, double, double>(
-            bp::args("self", "radius_a", "radius_b", "radius_c"), "Constructor with radii."))
+        .def(bp::init<double, double, double>(
+          bp::args("self", "radius_a", "radius_b", "radius_c"), "Constructor with radii."))
         .def_readwrite(
           "radius_a", &JointEllipsoid::radius_a, "Semi-axis length in the x direction.")
         .def_readwrite(
@@ -163,14 +161,12 @@ namespace pinocchio
       bp::class_<JointComposite>(
         "JointComposite", "Represents a composite joint.",
         bp::init<>(bp::args("self"), "Default constructor."))
-        .def(
-          bp::init<const JointVariant &, const pinocchio::SE3 &>(
-            bp::args("self", "joint_variant", "joint_pose"),
-            "Constructor with a single joint and its placement."))
-        .def(
-          bp::init<const std::vector<JointVariant> &, const std::vector<SE3> &>(
-            bp::args("self", "joints_variants", "joint_poses"),
-            "Constructor with multiple joints and their placements."))
+        .def(bp::init<const JointVariant &, const pinocchio::SE3 &>(
+          bp::args("self", "joint_variant", "joint_pose"),
+          "Constructor with a single joint and its placement."))
+        .def(bp::init<const std::vector<JointVariant> &, const std::vector<SE3> &>(
+          bp::args("self", "joints_variants", "joint_poses"),
+          "Constructor with multiple joints and their placements."))
         .def_readwrite("joints", &JointComposite::joints, "List of joints in the composite joint.")
         .def_readwrite(
           "jointsPlacements", &JointComposite::jointsPlacements,
@@ -189,10 +185,9 @@ namespace pinocchio
       bp::class_<JointMimic>(
         "JointMimic", "Represents a mimic joint.",
         bp::init<>(bp::args("self"), "Default constructor."))
-        .def(
-          bp::init<const JointVariant &, const std::string &, double, double>(
-            bp::args("self", "secondary_joint_model", "primary_name", "scaling", "offset"),
-            "Constructor for mimic joint."))
+        .def(bp::init<const JointVariant &, const std::string &, double, double>(
+          bp::args("self", "secondary_joint_model", "primary_name", "scaling", "offset"),
+          "Constructor for mimic joint."))
         .def_readwrite(
           "primary_name", &JointMimic::primary_name, "Name of the primary joint being mimicked.")
         .def_readwrite(
@@ -238,14 +233,13 @@ namespace pinocchio
       bp::class_<EdgeParameters>(
         "EdgeParameters", "Parameters for defining an edge (joint) in the ModelGraph.")
         .def(bp::init<>())
-        .def(
-          bp::init<
-            const std::string &, const std::string &, const SE3 &, const std::string &, const SE3 &,
-            const JointVariant &, const boost::optional<Eigen::VectorXd>>(
-            (bp::arg("name"), bp::arg("source_vertex"), bp::arg("source_to_joint"),
-             bp::arg("target_vertex"), bp::arg("joint_to_target"), bp::arg("joint"),
-             bp::arg("q_ref") = boost::none),
-            "Constructor to define an edge with specific parameters."))
+        .def(bp::init<
+             const std::string &, const std::string &, const SE3 &, const std::string &,
+             const SE3 &, const JointVariant &, const boost::optional<Eigen::VectorXd>>(
+          (bp::arg("name"), bp::arg("source_vertex"), bp::arg("source_to_joint"),
+           bp::arg("target_vertex"), bp::arg("joint_to_target"), bp::arg("joint"),
+           bp::arg("q_ref") = boost::none),
+          "Constructor to define an edge with specific parameters."))
         .def_readwrite("name", &EdgeParameters::name, "Name of the edge/joint.")
         .def_readwrite(
           "source_vertex", &EdgeParameters::source_vertex,
