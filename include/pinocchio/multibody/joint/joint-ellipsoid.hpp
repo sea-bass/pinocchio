@@ -334,7 +334,10 @@ namespace pinocchio
     JointModelEllipsoidTpl<NewScalar, Options> cast() const
     {
       typedef JointModelEllipsoidTpl<NewScalar, Options> ReturnType;
-      ReturnType res(radius_a, radius_b, radius_c);
+      ReturnType res{
+        ScalarCast<NewScalar, Scalar>::cast(radius_a),
+        ScalarCast<NewScalar, Scalar>::cast(radius_b),
+        ScalarCast<NewScalar, Scalar>::cast(radius_c)};
       res.setIndexes(id(), idx_q(), idx_v(), idx_vExtended());
       return res;
     }
