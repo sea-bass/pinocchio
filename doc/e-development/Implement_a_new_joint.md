@@ -1,4 +1,5 @@
-#How to implement a new joint in Pinocchio
+# How to implement a new joint in Pinocchio {#md_doc_e-dev_impl-new-joint}
+
 **Tags:** #Pinocchio #tutorial #joints #implementation #motionsubspace 
 
 This guide provides a comprehensive, step-by-step approach to implementing a new joint type in Pinocchio. It covers mathematical foundations, core implementation, parser integration, and testing requirements.
@@ -104,7 +105,6 @@ Pinocchio already implements many joint types. Study these as references:
 | **Revolute Unaligned** | `joint-revolute-unaligned.hpp` | 1 | 1 | Revolute with arbitrary axis |
 | **Prismatic Unaligned** | `joint-prismatic-unaligned.hpp` | 1 | 1 | Prismatic with arbitrary axis |
 | **Revolute Unbounded** | `joint-revolute-unbounded.hpp` | 2 | 1 | Revolute without configuration limit |
-| **Prismatic Unbounded** | `joint-prismatic-unbounded.hpp` | 2 | 1 | Prismatic without configuration limit |
 | **Spherical** | `joint-spherical.hpp` | 4 | 3 | 3-DOF rotation using quaternion |
 | **Spherical ZYX** | `joint-spherical-ZYX.hpp` | 3 | 3 | 3-DOF rotation using Euler angles |
 | **Free Flyer** | `joint-free-flyer.hpp` | 7 | 6 | 6-DOF (translation + rotation) |
@@ -123,94 +123,93 @@ Pinocchio already implements many joint types. Study these as references:
 ### Key Mathematical Concepts
 
 A joint is characterized by:
-- **Configuration dimension** `nq`: Size of the configuration vector $q$
-- **Velocity dimension** `nv`: Size of the velocity vector $\dot{q}$
-- **Motion subspace** $S(q)$: Maps joint velocity to spatial velocity: $v_J = S(q)\dot{q}$
-- **Spatial transform** $M(q)$: Placement from parent to child frame
-- **Bias acceleration** $c(q,\dot{q})$: Often written as $\dot{S}\dot{q}$
+- **Configuration dimension** `nq`: Size of the configuration vector \f$q\f$
+- **Velocity dimension** `nv`: Size of the velocity vector \f$\dot{q}\f$
+- **Motion subspace** \f$S(q)\f$: Maps joint velocity to spatial velocity: \f$v_J = S(q)\dot{q}\f$
+- **Spatial transform** \f$M(q)\f$: Placement from parent to child frame
+- **Bias acceleration** \f$c(q,\dot{q})\f$: Often written as \f$\dot{S}\dot{q}\f$
 
 ---
 ## Step 1: Mathematical Foundation
 
-**What You'll Do:** Derive the mathematical equations that govern your joint's behavior. You will compute the spatial transform $M(q)$, motion subspace $S(q)$, and bias acceleration $c(q,\dot{q})$ using pen-and-paper or symbolic tools.
+**What You'll Do:** Derive the mathematical equations that govern your joint's behavior. You will compute the spatial transform \f$M(q)\f$, motion subspace \f$S(q)\f$, and bias acceleration \f$c(q,\dot{q})\f$ using pen-and-paper or symbolic tools.
 
 **Goal:** By the end of this step, you should have closed-form expressions ready to implement in code.
 ### 1.1 Define the Joint Configuration
 
 First, determine your joint's configuration and velocity spaces:
-- What are the generalized coordinates $q = [q_0, q_1, \ldots, q_{n-1}]$?
-- What is the relationship between $q$ and $\dot{q}$ (are they in the same space)?
+- What are the generalized coordinates \f$q = [q_0, q_1, \ldots, q_{n-1}]\f$?
+- What is the relationship between \f$q\f$ and \f$\dot{q}\f$ (are they in the same space)?
 
 > [!IMPORTANT]
-
 > For non-Euclidean joints (e.g., spherical joints using quaternions), `nq` may differ from `nv`. Ensure you understand the Lie group structure.
+
 ### 1.2 Derive the Spatial Transform
 
 Compute the spatial transformation matrix from parent frame **p** to child frame **c**:  
-$$
+\f[
 {^p}X_c(q) = \begin{bmatrix} R(q) & 0 \\ -R(q)p(q)^\times & R(q) \end{bmatrix}
-$$
-  Where:
+\f]
+Where:
 
-- $R(q) \in SO(3)$ is the rotation matrix
-- $p(q) \in \mathbb{R}^3$ is the translation vector
-- $p^\times$ denotes the skew-symmetric matrix
+- \f$R(q) \in SO(3)\f$ is the rotation matrix
+- \f$p(q) \in \mathbb{R}^3\f$ is the translation vector
+- \f$p^\times\f$ denotes the skew-symmetric matrix
 
-> [!EXAMPLE - Ellipsoid Joint]
-  The ellipsoid joint has translation $p(q)$ and rotation $R(q)$ that depends on ellipsoid radii $(a,b,c)$ and configuration $(q_0, q_1, q_2)$:
-$$\begin{align} p(q) = \begin{bmatrix} a\sin q_1 \\ -b\sin q_0\cos q_1 \\ c\cos q_0\cos q_1 \end{bmatrix} &  & R(q) = R_x(q_0) R_y(q_1) R_z(q_2) \end{align}$$
+> [!TIP]
+> The ellipsoid joint has translation \f$p(q)\f$ and rotation \f$R(q)\f$ that depends on ellipsoid radii \f$(a,b,c)\f$ and configuration \f$(q_0, q_1, q_2)\f$:
+> \f[
+> \begin{align} p(q) = \begin{bmatrix} a\sin q_1 \\ -b\sin q_0\cos q_1 \\ c\cos q_0\cos q_1 \end{bmatrix} &  & R(q) = R_x(q_0) R_y(q_1) R_z(q_2) \end{align}
+> \f]
+
 ### 1.3 Derive the Motion Subspace
 
-  The motion subspace is the Jacobian of the spatial velocity with respect to joint velocity:
-$$
+The motion subspace is the Jacobian of the spatial velocity with respect to joint velocity:
+\f[
 S = \frac{\partial {^p}v_J}{\partial \dot{q}}
-$$
-  Where the spatial velocity in Pinocchio's convention is:
-$$
+\f]
+Where the spatial velocity in Pinocchio's convention is:
+\f[
 {^p}v_J = \begin{bmatrix} \dot{p}(q,\dot{q}) \\ \omega(q,\dot{q}) \end{bmatrix}
-$$
+\f]
+
 > [!NOTE]
-
-> Pinocchio uses the convention $[v, \; \omega]^\top$ (linear, angular), while some literature (in the Featherstone book) uses $[\omega, \; v + p \times \omega]^\top$ (angular, linear). Be consistent with Pinocchio's convention.
-#### Computing $\omega$ (Angular Velocity)
+> Pinocchio uses the convention \f$[v, \; \omega]^\top\f$ (linear, angular), while some literature (in the Featherstone book) uses \f$[\omega, \; v + p \times \omega]^\top\f$ (angular, linear). Be consistent with Pinocchio's convention.
+#### Computing \f$\omega\f$ (Angular Velocity)
 For rotation-based joints, extract angular velocity from:
-$$
 
+\f[
 \omega = \text{axial}(\dot{R}(q)R(q)^T)
-
-$$
-Where $\text{axial}$ extracts the vector from a skew-symmetric matrix.
-#### Computing $\dot{p}$ (Linear Velocity)
+\f]
+Where \f$\text{axial}\f$ extracts the vector from a skew-symmetric matrix.
+#### Computing \f$\dot{p}\f$ (Linear Velocity)
 Differentiate the translation with respect to time:
-$$
+\f[
 \dot{p} = \frac{dp}{dt} = \frac{\partial p}{\partial q}\dot{q}
-$$
+\f]
 ### 1.4 Derive the Bias Acceleration
 The bias acceleration (also called velocity product) is:
-$$
+\f[
 c = \dot{S}\dot{q}
-$$
+\f]
 Where:
-$$
+\f[
 \dot{S} = \sum_{i=0}^{n_v-1} \frac{\partial S}{\partial q_i}\dot{q}_i
-$$
+\f]
 Or equivalently:
-$$
-
+\f[
 \dot{S} = \frac{\partial^2 {^p}v_J}{\partial q \partial \dot{q}} \dot{q}
+\f]
 
-$$
 > [!TIP]
-
-> Use symbolic computation tools (SymPy, Mathematica) to derive these expressions. The math can become complex quickly, especially for $\dot{S}$. 
-
-> [!CODE EXAMPLE]
+> Use symbolic computation tools (SymPy, Mathematica) to derive these expressions. The math can become complex quickly, especially for \f$\dot{S}\f$.
 > ```python
 > Sdot = sp.Matrix.zeros(6, 3)  
 > for i in range(3):  
 >     for j in range(3):  
 >         Sdot[:, i] += sp.diff(S[:, i], q[j]) * qdot[j]
 > ``` 
+
 ---
 ## Step 2: Core Joint Implementation
 
@@ -275,7 +274,6 @@ typedef Eigen::Matrix<Scalar, NV, 1, Options> TangentVector_t;
 ```
 
 > [!IMPORTANT]
-
 > All typedef here determines how spatial algebra vectors are represented. Here, `JointMotionSubspaceTpl`, `SE3Tpl` and `MotionTpl` are dense matrices.
 > To take advantage of sparse patterns, they can be specialized (see [Section 3](#step-3-motion-subspace-specialization) for `JointMotionSubspaceTpl` specialization).
 > It's generally a good idea to implement the non-sparse version first.
@@ -455,8 +453,8 @@ computeBias(/* ... */, data);
 ```
 
 > [!TIP]
-
 > Use helper functions like `computeSpatialTransform`, `computeMotionSubspace`, and `computeBias` to keep your code modular and readable. Espacially is you have complex formulae. Like for an Ellipsoid Joint.
+
 ### 2.6 Implement ABA Support
 
 For the Articulated Body Algorithm:
@@ -541,16 +539,18 @@ In `bindings/python/multibody/joint/joints-datas.hpp`, add similar binding for `
 
 **What You'll Do:** Optionally create a custom constraint class to exploit sparse structure in your motion subspace matrix. This step is **optional** but can significantly improve performance.
 
-**When to do this:** If your joint's $S$ matrix has many zeros or a repeating pattern (like Revolute or Prismatic joints).
+**When to do this:** If your joint's \f$S\f$ matrix has many zeros or a repeating pattern (like Revolute or Prismatic joints).
 
-**When to skip this:** If your $S$ matrix is dense (like Ellipsoid), use the generic `JointMotionSubspaceTpl` and skip to Step 4.
+**When to skip this:** If your matrix is dense (like Ellipsoid), use the generic `JointMotionSubspaceTpl` and skip to Step 4.
+
 ### 3.1 When to Specialize
 
 If your joint's motion subspace has a **sparse or structured pattern**, you can define a custom constraint class to exploit this structure for performance.
 
 **Examples:**
-- Revolute joint: $S = [0, 0, 0, 0, 0, 1]^T$ (single non-zero entry)
-- Prismatic joint: $S = [1, 0, 0, 0, 0, 0]^T$
+
+- Revolute joint: \f$S = [0, 0, 0, 0, 0, 1]^T \f$ (single non-zero entry)
+- Prismatic joint: \f$S = [1, 0, 0, 0, 0, 0]^T \f$
 - Spherical joint: Block-diagonal structure
 
 **When NOT to specialize:**
@@ -608,7 +608,6 @@ typedef JointMotionSubspaceMyJoint<Scalar, Options> Constraint_t;
 ```
 
 > [!TIP]
-
 > Look at existing specialized constraints like `JointModelRevoluteTpl` for inspiration.
 
 ---
@@ -767,7 +766,9 @@ v_target.template segment<JointModel::NV>(offset_target)
 ```
 
 > [!WARNING]
-> Joint reversal can be non-trivial. For example, the Ellipsoid joint cannot be reversed because its motion subspace is defined in a specific frame, the parent frame. Only implement reversal if you can get the spatial transform of the joint in the child frame by modifying $q$.
+> Joint reversal can be non-trivial.
+> For example, the Ellipsoid joint cannot be reversed because its motion subspace is defined in a specific frame, the parent frame.
+> Only implement reversal if you can get the spatial transform of the joint in the child frame by modifying \f$q\f$.
 
 ### 4.6 Add Python Exposure
 
@@ -797,7 +798,7 @@ bp::class_<JointMyJoint>("JointMyJoint", bp::init<>())
 - `unittest/finite-differences.cpp` (add to finite-diff tests, modify only if your test take parameters)
 
 **Testing Priority:**
-1. **First:** Test the joint in isolation (kinematics, $S$, $\dot{S}$, dynamics)
+1. **First:** Test the joint in isolation (kinematics, \f$S\f$, \f$\dot{S}\f$, dynamics)
 2. **Second:** Test graph integration (if you implemented Step 4)
 3. **Third:** Test converters and serialization
 
@@ -977,15 +978,15 @@ BOOST_CHECK(jmodel.param_b == jmodel_loaded.param_b);
 ## Summary Checklist
 
 Use this checklist to track your implementation progress:
+
 ### Mathematical Foundation
-
 - [ ] Define configuration space (nq) and tangent space (nv)
-- [ ] Derive spatial transform $M(q)$
-- [ ] Derive motion subspace $S(q)$
-- [ ] Derive bias acceleration $c(q,\dot{q})$ or $\dot{S}(q,\dot{q})$
+- [ ] Derive spatial transform \f$M(q)\f$
+- [ ] Derive motion subspace \f$S(q)\f$
+- [ ] Derive bias acceleration \f$c(q,\dot{q})\f$ or \f$\dot{S}(q,\dot{q})\f$
 - [ ] Verify equations symbolically (SymPy, Mathematica)
-### Core Implementation
 
+### Core Implementation
 - [ ] Create `include/pinocchio/multibody/joint/joint-<name>.hpp`
 - [ ] Define `traits` struct with NQ, NV, typedefs
 - [ ] Implement `JointDataMyJointTpl` struct
@@ -996,13 +997,14 @@ Use this checklist to track your implementation progress:
 - [ ] Add forward declaration in `fwd.hpp`
 - [ ] Include in `joints.hpp` and `joint-collection.hpp`
 - [ ] Add Python bindings for JointModel and JointData
+
 ### Motion Subspace Specialization (Optional)
 - [ ] Determine if specialization is beneficial
 - [ ] Implement custom constraint class
 - [ ] Update traits to use custom constraint
 - [ ] Implement spatial algebra operations
-### Model Graph Integration
 
+### Model Graph Integration
 - [ ] Define graph joint struct in `parsers/graph/joints.hpp`
 - [ ] Add to `JointVariant` typedef
 - [ ] Implement `CreateJointModelVisitor` in `model-graph-algo.cpp`
@@ -1012,8 +1014,8 @@ Use this checklist to track your implementation progress:
 - [ ] (Optional) Implement `ConfigurationConverterVisitor` in `model-configuration-converter.hxx`
 - [ ] (Optional) Implement `TangentConverterVisitor` in `model-configuration-converter.hxx`
 - [ ] Add Python bindings for graph joint in `expose-edges.cpp`
-### Testing
 
+### Testing
 - [ ] Create `unittest/joint-<name>.cpp`
 - [ ] Test basic kinematics (M, S, v)
 - [ ] Test motion subspace derivative (Sdot, c) via finite differences
@@ -1028,22 +1030,18 @@ Use this checklist to track your implementation progress:
 - [ ] Update `unittest/CMakeLists.txt`
 
 ### Documentation
-
 - [ ] Add docstrings to public methods
 - [ ] Document joint parameters and their meanings
 - [ ] Add example usage in `examples/`
 - [ ] Update documentation in `doc/`
----
 
-  
+---
 
 ## Additional Resources
 
 - **Featherstone's Book**: *Rigid Body Dynamics Algorithms* (2008) - The definitive reference for spatial algebra
 - **Pinocchio Documentation**: https://gepettoweb.laas.fr/doc/stack-of-tasks/pinocchio/master/doxygen-html/
-- 
 - **Existing Joint Implementations**: Study `joint-revolute.hpp`, `joint-spherical-ZYX.hpp`, `joint-free-flyer.hpp` for examples
-- 
 - **SymPy for symbolic math**: https://www.sympy.org/
 
 ---
@@ -1051,8 +1049,8 @@ Use this checklist to track your implementation progress:
 
 As a concrete example, the Ellipsoid joint implementation demonstrates:
 
-- **Configuration**: $(q_0, q_1, q_2)$ - three Euler angles (XYZ)
-- **Parameters**: $(a, b, c)$ - ellipsoid semi-axes
+- **Configuration**: \f$(q_0, q_1, q_2)\f$ - three Euler angles (XYZ)
+- **Parameters**: \f$(a, b, c)\f$ - ellipsoid semi-axes
 - **Motion subspace**: Dense 6×3 matrix (uses `JointMotionSubspaceTpl`)
 - **Reversal**: Not supported (motion subspace is frame-dependent)
 - **Testing**: Compared against SphericalZYX for rotation equivalence
@@ -1061,5 +1059,6 @@ Key files to review:
 - [`joint-ellipsoid.hpp`](include/pinocchio/multibody/joint/joint-ellipsoid.hpp)
 - [`unittest/joint-ellipsoid.cpp`](unittest/joint-ellipsoid.cpp)
 - [`examples/ellipsoid-joint-kinematics.py`](examples/ellipsoid-joint-kinematics.py)
+
 ---
 **Happy implementing! If you have questions, consult the Pinocchio community or review existing joint implementations for guidance.**
