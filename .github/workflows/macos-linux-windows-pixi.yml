@@ -29,6 +29,12 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  # This is needed on Windows because ellipsoid-joint-kinematics.py output
+  # some utf8 char.
+  # More detail here: https://gist.github.com/NodeJSmith/e7e37f2d3f162456869f015f842bcf15
+  PYTHONIOENCODING: "utf8"
+
 jobs:
   pinocchio-pixi:
     name: Standard - ${{ matrix.os }} - Env ${{ matrix.environment }} ${{ matrix.build_type }} ${{ matrix.compiler }}
