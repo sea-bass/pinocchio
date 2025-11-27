@@ -171,7 +171,7 @@ def compute_dynamics_example():
     #   So the resulting tau vector contains three generalized forces that
     #   include contributions from both rotational and translational effects.
     tau = pin.rnea(model, data, q, v, a)
-    print(f"\nRequired torques (RNEA): τ = {tau}")
+    print(f"\nRequired torques (RNEA): \N{GREEK SMALL LETTER TAU} = {tau}")
 
     # For example tau[0] is a combination of
     # S_11(q)* f_x + S_21(q)* f_y + S_31(q)* f_z
