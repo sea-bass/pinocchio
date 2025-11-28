@@ -379,7 +379,6 @@ void runJointTorqueRegressorTest(const Model & model, Data & data)
   }();
 }
 
-#if 0 // Currently disabled because it performs dynamic allocations. Let's wait for pinocchio v4.
 void runContactDynamicsTest(const Model & model, Data & data)
 {
   const Eigen::VectorXd q = randomConfiguration(model);
@@ -453,7 +452,6 @@ void runContactDynamicsTest(const Model & model, Data & data)
     }();
   }
 }
-#endif
 
 void runDynamicAllocationsTest(const Model & model)
 {
@@ -481,6 +479,8 @@ void runDynamicAllocationsTest(const Model & model)
     return;
   }
 
+  runJointTorqueRegressorTest(model, data);
+  runContactDynamicsTest(model, data);
   runABATest(model, data);
   runCenterOfMassDerivativesTest(model, data);
   runDerivativesTest(model, data);
