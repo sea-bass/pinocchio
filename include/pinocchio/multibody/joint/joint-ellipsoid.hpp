@@ -16,6 +16,273 @@ namespace pinocchio
   template<typename Scalar, int Options>
   struct JointEllipsoidTpl;
 
+  template<typename Scalar, int Options>
+  struct JointMotionSubspaceEllipsoidTpl;
+
+  template<typename Scalar, int Options>
+  struct SE3GroupAction<JointMotionSubspaceEllipsoidTpl<Scalar, Options>>
+  {
+    typedef Eigen::Matrix<Scalar, 6, 3, Options> ReturnType;
+  };
+
+  template<typename Scalar, int Options, typename MotionDerived>
+  struct MotionAlgebraAction<JointMotionSubspaceEllipsoidTpl<Scalar, Options>, MotionDerived>
+  {
+    typedef Eigen::Matrix<Scalar, 6, 3, Options> ReturnType;
+  };
+
+  template<typename Scalar, int Options, typename ForceDerived>
+  struct ConstraintForceOp<JointMotionSubspaceEllipsoidTpl<Scalar, Options>, ForceDerived>
+  {
+    typedef Eigen::Matrix<Scalar, 3, 1, Options> ReturnType;
+  };
+
+  template<typename Scalar, int Options, typename ForceSet>
+  struct ConstraintForceSetOp<JointMotionSubspaceEllipsoidTpl<Scalar, Options>, ForceSet>
+  {
+    typedef Eigen::Matrix<Scalar, 3, Eigen::Dynamic, Options> ReturnType;
+  };
+
+  template<typename _Scalar, int _Options>
+  struct traits<JointMotionSubspaceEllipsoidTpl<_Scalar, _Options>>
+  {
+    typedef _Scalar Scalar;
+    enum
+    {
+      Options = _Options
+    };
+    enum
+    {
+      LINEAR = 0,
+      ANGULAR = 3
+    };
+
+    typedef MotionTpl<Scalar, Options> JointMotion;
+    typedef Eigen::Matrix<Scalar, 3, 1, Options> JointForce;
+    typedef Eigen::Matrix<Scalar, 6, 3, Options> DenseBase;
+    typedef Eigen::Matrix<Scalar, 3, 3, Options> ReducedSquaredMatrix;
+
+    typedef DenseBase MatrixReturnType;
+    typedef const DenseBase ConstMatrixReturnType;
+
+    typedef typename ReducedSquaredMatrix::IdentityReturnType StDiagonalMatrixSOperationReturnType;
+  };
+
+  template<typename _Scalar, int _Options>
+  struct JointMotionSubspaceEllipsoidTpl
+  : JointMotionSubspaceBase<JointMotionSubspaceEllipsoidTpl<_Scalar, _Options>>
+  {
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+    PINOCCHIO_CONSTRAINT_TYPEDEF_TPL(JointMotionSubspaceEllipsoidTpl)
+    enum
+    {
+      NV = 3
+    };
+
+    typedef Eigen::Matrix<Scalar, 6, 3, Options> Matrix63;
+    Matrix63 S;
+
+    JointMotionSubspaceEllipsoidTpl()
+    {
+    }
+
+    template<typename Vector3Like>
+    JointMotion __mult__(const Eigen::MatrixBase<Vector3Like> & v) const
+    {
+      // Compute first 6 rows from first 2 columns
+      Eigen::Matrix<Scalar, 6, 1> result = S.template block<6, 2>(0, 0) * v.template segment<2>(0);
+
+      // Add contribution from last column (only row 5 is non-zero: S(5,2) = 1)
+      result[5] += v[2];
+
+      return JointMotion(result);
+    }
+
+    template<typename S1, int O1>
+    typename SE3GroupAction<JointMotionSubspaceEllipsoidTpl>::ReturnType
+    se3Action(const SE3Tpl<S1, O1> & m) const
+    {
+      typedef typename SE3GroupAction<JointMotionSubspaceEllipsoidTpl>::ReturnType ReturnType;
+      ReturnType res;
+      // Apply SE3 action to first two columns
+      motionSet::se3Action(m, S.template leftCols<2>(), res.template leftCols<2>());
+
+      res.template block<3, 1>(LINEAR, 2).noalias() = m.translation().cross(m.rotation().col(2));
+      res.template block<3, 1>(ANGULAR, 2) = m.rotation().col(2);
+
+      return res;
+    }
+
+    template<typename S1, int O1>
+    typename SE3GroupAction<JointMotionSubspaceEllipsoidTpl>::ReturnType
+    se3ActionInverse(const SE3Tpl<S1, O1> & m) const
+    {
+      typedef typename SE3GroupAction<JointMotionSubspaceEllipsoidTpl>::ReturnType ReturnType;
+      ReturnType res;
+      // Apply inverse SE3 action to first two columns
+      motionSet::se3ActionInverse(m, S.template leftCols<2>(), res.template leftCols<2>());
+
+      // Third column: inverse action on [0, 0, 0, 0, 0, 1]^T
+      // angular part: R^T * e_z
+      res.template block<3, 1>(ANGULAR, 2) = m.rotation().transpose().col(2);
+      // linear part: R^T * (t × e_z) = R^T * [-t_y, t_x, 0]^T
+      typedef Eigen::Matrix<Scalar, 3, 1, Options> Vector3;
+      const Vector3 t_cross_ez(-m.translation()[1], m.translation()[0], Scalar(0));
+      res.template block<3, 1>(LINEAR, 2).noalias() = m.rotation().transpose() * t_cross_ez;
+
+      return res;
+    }
+
+    int nv_impl() const
+    {
+      return NV;
+    }
+
+    struct TransposeConst : JointMotionSubspaceTransposeBase<JointMotionSubspaceEllipsoidTpl>
+    {
+      const JointMotionSubspaceEllipsoidTpl & ref;
+      TransposeConst(const JointMotionSubspaceEllipsoidTpl & ref)
+      : ref(ref)
+      {
+      }
+
+      template<typename ForceDerived>
+      typename ConstraintForceOp<JointMotionSubspaceEllipsoidTpl, ForceDerived>::ReturnType
+      operator*(const ForceDense<ForceDerived> & f) const
+      {
+        typedef
+          typename ConstraintForceOp<JointMotionSubspaceEllipsoidTpl, ForceDerived>::ReturnType
+            ReturnType;
+        ReturnType res;
+
+        // First two rows: S[:, 0:2]^T * f
+        res.template head<2>().noalias() = ref.S.template leftCols<2>().transpose() * f.toVector();
+
+        // Third row: [0,0,0,0,0,1]^T · f = f.angular()[2]
+        res[2] = f.angular()[2];
+
+        return res;
+      }
+
+      /// [CRBA]  MatrixBase operator* (Constraint::Transpose S, ForceSet::Block)
+      template<typename Derived>
+      Eigen::Matrix<
+        Scalar,
+        3,
+        Derived::ColsAtCompileTime,
+        Options | Eigen::RowMajor,
+        3,
+        Derived::MaxColsAtCompileTime>
+      operator*(const Eigen::MatrixBase<Derived> & F) const
+      {
+        EIGEN_STATIC_ASSERT(
+          Derived::RowsAtCompileTime == 6, THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE)
+        typedef Eigen::Matrix<
+          Scalar, 3, Derived::ColsAtCompileTime, Options | Eigen::RowMajor, 3,
+          Derived::MaxColsAtCompileTime>
+          ReturnType;
+
+        ReturnType res(3, F.cols());
+
+        // First two rows: S[:, 0:2]^T * F
+        res.template topRows<2>().noalias() =
+          ref.S.template leftCols<2>().transpose() * F.derived();
+
+        // Third row: [0,0,0,0,0,1]^T · F = F.row(5)
+        res.row(2) = F.row(5);
+
+        return res;
+      }
+    }; // struct TransposeConst
+
+    TransposeConst transpose() const
+    {
+      return TransposeConst(*this);
+    }
+
+    /* CRBA joint operators
+     *   - ForceSet::Block = ForceSet
+     *   - ForceSet operator* (Inertia Y,Constraint S)
+     *   - MatrixBase operator* (Constraint::Transpose S, ForceSet::Block)
+     *   - SE3::act(ForceSet::Block)
+     */
+    DenseBase matrix_impl() const
+    {
+      DenseBase res;
+
+      // Columns 0-1: copy the first two columns of S (6x2)
+      res.template leftCols<2>() = S.template leftCols<2>();
+
+      // Column 2: sparse [0, 0, 0, 0, 0, 1]^T
+      res.template block<5, 1>(0, 2).setZero();
+      res(5, 2) = Scalar(1);
+
+      return res;
+    }
+
+    template<typename MotionDerived>
+    typename MotionAlgebraAction<JointMotionSubspaceEllipsoidTpl, MotionDerived>::ReturnType
+    motionAction(const MotionDense<MotionDerived> & m) const
+    {
+      typedef
+        typename MotionAlgebraAction<JointMotionSubspaceEllipsoidTpl, MotionDerived>::ReturnType
+          ReturnType;
+      ReturnType res;
+
+      // Motion action on first two columns
+      motionSet::motionAction(m, S.template leftCols<2>(), res.template leftCols<2>());
+
+      // Motion action on third column [0, 0, 0, 0, 0, 1]^T
+      // [v; w] × [0; e_z] = [v × e_z; w × e_z]
+      const typename MotionDense<MotionDerived>::ConstLinearType & v_lin = m.linear();
+      const typename MotionDense<MotionDerived>::ConstAngularType & w = m.angular();
+
+      // v × e_z = [v[1], -v[0], 0]
+      res(LINEAR + 0, 2) = v_lin[1];
+      res(LINEAR + 1, 2) = -v_lin[0];
+      res(LINEAR + 2, 2) = Scalar(0);
+
+      // w × e_z = [w[1], -w[0], 0]
+      res(ANGULAR + 0, 2) = w[1];
+      res(ANGULAR + 1, 2) = -w[0];
+      res(ANGULAR + 2, 2) = Scalar(0);
+
+      return res;
+    }
+
+    bool isEqual(const JointMotionSubspaceEllipsoidTpl & other) const
+    {
+      return S == other.S;
+    }
+
+  }; // struct JointMotionSubspaceEllipsoidTpl
+
+  /* [CRBA] ForceSet operator* (Inertia Y, Constraint S) */
+  template<typename S1, int O1, typename S2, int O2>
+  Eigen::Matrix<S1, 6, 3, O1>
+  operator*(const InertiaTpl<S1, O1> & Y, const JointMotionSubspaceEllipsoidTpl<S2, O2> & S)
+  {
+    // Y * S where Y is 6x6 inertia and S is 6x3 motion subspace
+    // Returns 6x3 force set
+    typedef InertiaTpl<S1, O1> Inertia;
+    Eigen::Matrix<S1, 6, 3, O1> M;
+    M.noalias() = Y.matrix() * S.matrix();
+    return M;
+  }
+
+  /* [ABA] Y*S operator (Matrix6 Y, Constraint S) */
+  template<typename Matrix6Like, typename S2, int O2>
+  typename MatrixMatrixProduct<
+    Matrix6Like,
+    typename JointMotionSubspaceEllipsoidTpl<S2, O2>::DenseBase>::type
+  operator*(
+    const Eigen::MatrixBase<Matrix6Like> & Y, const JointMotionSubspaceEllipsoidTpl<S2, O2> & S)
+  {
+    EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Matrix6Like, 6, 6);
+    return Y.derived() * S.matrix();
+  }
+
   template<typename _Scalar, int _Options>
   struct traits<JointEllipsoidTpl<_Scalar, _Options>>
   {
@@ -32,7 +299,9 @@ namespace pinocchio
     };
     typedef JointDataEllipsoidTpl<Scalar, Options> JointDataDerived;
     typedef JointModelEllipsoidTpl<Scalar, Options> JointModelDerived;
-    typedef JointMotionSubspaceTpl<3, Scalar, Options, 3> Constraint_t;
+    // typedef JointMotionSubspaceTpl<3, Scalar, Options, 3> Constraint_t;
+    typedef JointMotionSubspaceEllipsoidTpl<Scalar, Options> Constraint_t;
+
     typedef SE3Tpl<Scalar, Options> Transformation_t;
 
     typedef MotionTpl<Scalar, Options> Motion_t;
@@ -398,12 +667,13 @@ namespace pinocchio
       S_32 = dndotx_dqdot1 * radius_a * s1 - dndoty_dqdot1 * radius_b * c1 * s0
              + dndotz_dqdot1 * radius_c * c0 * c1;
 
-      data.S.matrix() << S_11   , S_12  , Scalar(0),
-                         S_21   , S_22  , Scalar(0),
-                         S_31   , S_32  , Scalar(0),
-                         c1 * c2, s2    , Scalar(0),
-                        -c1 * s2, c2    , Scalar(0),
-                         s1     , Scalar(0), Scalar(1);
+      // Write directly to the internal matrix S, not to matrix() which returns a copy
+      data.S.S << S_11   , S_12  , Scalar(0),
+                  S_21   , S_22  , Scalar(0),
+                  S_31   , S_32  , Scalar(0),
+                  c1 * c2, s2    , Scalar(0),
+                 -c1 * s2, c2    , Scalar(0),
+                  s1     , Scalar(0), Scalar(1);
       // clang-format on
     }
 
