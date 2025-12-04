@@ -10,6 +10,7 @@
 #include "pinocchio/multibody/joint-motion-subspace.hpp"
 #include "pinocchio/math/sincos.hpp"
 #include "pinocchio/math/matrix.hpp"
+#include "pinocchio/spatial/spatial-axis.hpp"
 
 namespace pinocchio
 {
@@ -40,7 +41,9 @@ namespace pinocchio
   template<typename Scalar, int Options, typename ForceSet>
   struct ConstraintForceSetOp<JointMotionSubspaceEllipsoidTpl<Scalar, Options>, ForceSet>
   {
-    typedef Eigen::Matrix<Scalar, 3, Eigen::Dynamic, Options> ReturnType;
+    typedef typename traits<JointMotionSubspaceEllipsoidTpl<Scalar, Options>>::DenseBase DenseBase;
+    typedef
+      typename MatrixMatrixProduct<Eigen::Transpose<const DenseBase>, ForceSet>::type ReturnType;
   };
 
   template<typename _Scalar, int _Options>
@@ -80,12 +83,10 @@ namespace pinocchio
       NV = 3
     };
 
+    typedef SpatialAxis<5> AxisRotz;
+
     typedef Eigen::Matrix<Scalar, 6, 3, Options> Matrix63;
     Matrix63 S;
-
-    JointMotionSubspaceEllipsoidTpl()
-    {
-    }
 
     template<typename Vector3Like>
     JointMotion __mult__(const Eigen::MatrixBase<Vector3Like> & v) const
@@ -127,9 +128,8 @@ namespace pinocchio
       // angular part: R^T * e_z
       res.template block<3, 1>(ANGULAR, 2) = m.rotation().transpose().col(2);
       // linear part: R^T * (t × e_z) = R^T * [-t_y, t_x, 0]^T
-      typedef Eigen::Matrix<Scalar, 3, 1, Options> Vector3;
-      const Vector3 t_cross_ez(-m.translation()[1], m.translation()[0], Scalar(0));
-      res.template block<3, 1>(LINEAR, 2).noalias() = m.rotation().transpose() * t_cross_ez;
+      res.template block<3, 1>(LINEAR, 2).noalias() =
+        m.rotation().transpose() * SpatialAxis<5>::CartesianAxis3::cross(m.translation());
 
       return res;
     }
@@ -194,6 +194,12 @@ namespace pinocchio
 
         return res;
       }
+      // template<typename ForceSet>
+      // typename ConstraintForceSetOp<JointMotionSubspaceTpl, ForceSet>::ReturnType
+      // operator*(const Eigen::MatrixBase<ForceSet> & F)
+      // {
+      //   return ref.S.transpose() * F.derived();
+      // }
     }; // struct TransposeConst
 
     TransposeConst transpose() const
@@ -209,16 +215,7 @@ namespace pinocchio
      */
     DenseBase matrix_impl() const
     {
-      DenseBase res;
-
-      // Columns 0-1: copy the first two columns of S (6x2)
-      res.template leftCols<2>() = S.template leftCols<2>();
-
-      // Column 2: sparse [0, 0, 0, 0, 0, 1]^T
-      res.template block<5, 1>(0, 2).setZero();
-      res(5, 2) = Scalar(1);
-
-      return res;
+      return S;
     }
 
     template<typename MotionDerived>
@@ -231,22 +228,28 @@ namespace pinocchio
       ReturnType res;
 
       // Motion action on first two columns
+      typedef SpatialAxis<5> AxisZ;
       motionSet::motionAction(m, S.template leftCols<2>(), res.template leftCols<2>());
+      // res.col(2).noalias() = m.cross(());
 
-      // Motion action on third column [0, 0, 0, 0, 0, 1]^T
-      // [v; w] × [0; e_z] = [v × e_z; w × e_z]
-      const typename MotionDense<MotionDerived>::ConstLinearType & v_lin = m.linear();
-      const typename MotionDense<MotionDerived>::ConstAngularType & w = m.angular();
+      // We have to use a MotionRef to deal with the output of the cross product
+      MotionRef<typename ReturnType::ColXpr> v_col2(res.col(2));
+      v_col2 = m.cross(AxisRotz());
 
-      // v × e_z = [v[1], -v[0], 0]
-      res(LINEAR + 0, 2) = v_lin[1];
-      res(LINEAR + 1, 2) = -v_lin[0];
-      res(LINEAR + 2, 2) = Scalar(0);
+      // // Motion action on third column [0, 0, 0, 0, 0, 1]^T
+      // // [v; w] × [0; e_z] = [v × e_z; w × e_z]
+      // const typename MotionDense<MotionDerived>::ConstLinearType & v_lin = m.linear();
+      // const typename MotionDense<MotionDerived>::ConstAngularType & w = m.angular();
 
-      // w × e_z = [w[1], -w[0], 0]
-      res(ANGULAR + 0, 2) = w[1];
-      res(ANGULAR + 1, 2) = -w[0];
-      res(ANGULAR + 2, 2) = Scalar(0);
+      // // v × e_z = [v[1], -v[0], 0]
+      // res(LINEAR + 0, 2) = v_lin[1];
+      // res(LINEAR + 1, 2) = -v_lin[0];
+      // res(LINEAR + 2, 2) = Scalar(0);
+
+      // // w × e_z = [w[1], -w[0], 0]
+      // res(ANGULAR + 0, 2) = w[1];
+      // res(ANGULAR + 1, 2) = -w[0];
+      // res(ANGULAR + 2, 2) = Scalar(0);
 
       return res;
     }
@@ -260,14 +263,21 @@ namespace pinocchio
 
   /* [CRBA] ForceSet operator* (Inertia Y, Constraint S) */
   template<typename S1, int O1, typename S2, int O2>
-  Eigen::Matrix<S1, 6, 3, O1>
-  operator*(const InertiaTpl<S1, O1> & Y, const JointMotionSubspaceEllipsoidTpl<S2, O2> & S)
+  Eigen::Matrix<S1, 6, 3, O1> operator*(
+    const InertiaTpl<S1, O1> & Y, const JointMotionSubspaceEllipsoidTpl<S2, O2> & constraint)
   {
-    // Y * S where Y is 6x6 inertia and S is 6x3 motion subspace
-    // Returns 6x3 force set
+    // Y * S where S[:, 2] = [0,0,0,0,0,1]^T (rotation around z-axis)
+    // So M[:, 2] = Y * e_z = Y.matrix().col(5)
+    typedef Eigen::Matrix<S1, 6, 3, O1> ReturnType;
     typedef InertiaTpl<S1, O1> Inertia;
-    Eigen::Matrix<S1, 6, 3, O1> M;
-    M.noalias() = Y.matrix() * S.matrix();
+    ReturnType M;
+
+    // Columns 0-1: Y * S[:, 0:2]
+    M.template leftCols<2>().noalias() = Y.matrix() * constraint.matrix().template leftCols<2>();
+
+    // Column 2: Y * [0,0,0,0,0,1]^T = Y.matrix().col(5)
+    M.col(2) = Y.matrix().col(Inertia::ANGULAR + 2);
+
     return M;
   }
 
@@ -299,7 +309,6 @@ namespace pinocchio
     };
     typedef JointDataEllipsoidTpl<Scalar, Options> JointDataDerived;
     typedef JointModelEllipsoidTpl<Scalar, Options> JointModelDerived;
-    // typedef JointMotionSubspaceTpl<3, Scalar, Options, 3> Constraint_t;
     typedef JointMotionSubspaceEllipsoidTpl<Scalar, Options> Constraint_t;
 
     typedef SE3Tpl<Scalar, Options> Transformation_t;
