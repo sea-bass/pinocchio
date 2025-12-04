@@ -273,9 +273,10 @@ jobs:
         include:
           - os: ubuntu-latest
             name: Ubuntu (x86_64)
-
-          - os: macos-latest
-            name: MacOS (ARM64)
+          # FIXME: Disabling aarch64 RTSan build
+          # as static local variables uses pthread_mutex_lock()
+          # - os: macos-latest
+          #   name: MacOS (ARM64)
 
     steps:
       - uses: actions/checkout@v5
