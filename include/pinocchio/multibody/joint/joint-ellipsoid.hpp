@@ -293,20 +293,26 @@ namespace pinocchio
   /* [CRBA] ForceSet operator* (Inertia Y, Constraint S) */
   template<typename S1, int O1, typename S2, int O2>
   Eigen::Matrix<S1, 6, 3, O1> operator*(
-    const InertiaTpl<S1, O1> & Y, const JointMotionSubspaceEllipsoidTpl<S2, O2> & constraint)
+    const InertiaTpl<S1, O1> & Y, const JointMotionSubspaceEllipsoidTpl<S2, O2> & S)
   {
-    // Y * S where S[:, 2] = [0,0,0,0,0,1]^T (rotation around z-axis)
-    // So M[:, 2] = Y * e_z = Y.matrix().col(5)
+    // none of this work at this stage: I'll squash after the review to make the code disappear.
+    // // Y * S where last col is [0,0,0,0,0,1]^T (rotation around z-axis)
+    // // So last column of M is Y * e_z = Y.matrix().col(5)
+    // typedef Eigen::Matrix<S1, 6, 3, O1> ReturnType;
+    // typedef InertiaTpl<S1, O1> Inertia;
+    // ReturnType M;
+
+    // // Cache Y.matrix() to avoid computing it twice
+    // const typename Inertia::Matrix6 Y_mat = Y.matrix();
+
+    // // Columns 0-1: Y * S.template leftCols<2>()
+    // M.template leftCols<2>().noalias() = Y_mat * S.matrix().template leftCols<2>();
+
+    // // Column 2: Y * [0,0,0,0,0,1]^T = Y.matrix().col(5)
+    // M.col(2) = Y_mat.col(Inertia::ANGULAR + 2);
     typedef Eigen::Matrix<S1, 6, 3, O1> ReturnType;
-    typedef InertiaTpl<S1, O1> Inertia;
     ReturnType M;
-
-    // Columns 0-1: Y * S[:, 0:2]
-    M.template leftCols<2>().noalias() = Y.matrix() * constraint.matrix().template leftCols<2>();
-
-    // Column 2: Y * [0,0,0,0,0,1]^T = Y.matrix().col(5)
-    M.col(2) = Y.matrix().col(Inertia::ANGULAR + 2);
-
+    M.noalias() = Y.matrix() * S.matrix();
     return M;
   }
 
