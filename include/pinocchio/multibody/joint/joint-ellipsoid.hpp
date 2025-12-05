@@ -68,7 +68,7 @@ namespace pinocchio
     typedef DenseBase MatrixReturnType;
     typedef const DenseBase ConstMatrixReturnType;
 
-    typedef typename ReducedSquaredMatrix::IdentityReturnType StDiagonalMatrixSOperationReturnType;
+    typedef ReducedSquaredMatrix StDiagonalMatrixSOperationReturnType;
   };
 
   template<typename _Scalar, int _Options>
@@ -260,6 +260,35 @@ namespace pinocchio
     }
 
   }; // struct JointMotionSubspaceEllipsoidTpl
+
+  namespace details
+  {
+    template<typename Scalar, int Options>
+    struct StDiagonalMatrixSOperation<JointMotionSubspaceEllipsoidTpl<Scalar, Options>>
+    {
+      typedef JointMotionSubspaceEllipsoidTpl<Scalar, Options> Constraint;
+      typedef typename traits<Constraint>::StDiagonalMatrixSOperationReturnType ReturnType;
+
+      static ReturnType run(const JointMotionSubspaceBase<Constraint> & S)
+      {
+        // Exploit sparse structure of last column: [0,0,0,0,0,1]^T
+        ReturnType res;
+        const typename Constraint::DenseBase & SMatrix = S.matrix();
+
+        // Upper-left dense 2x2 block: S^T * S
+        res.template topLeftCorner<2, 2>().noalias() =
+          SMatrix.template leftCols<2>().transpose() * SMatrix.template leftCols<2>();
+        // Third column/row: S(5, 0), S(5, 1), 1
+        res(0, 2) = SMatrix(5, 0);
+        res(1, 2) = SMatrix(5, 1);
+        res(2, 2) = Scalar(1);
+        res(2, 0) = res(0, 2);
+        res(2, 1) = res(1, 2);
+
+        return res;
+      }
+    };
+  } // namespace details
 
   /* [CRBA] ForceSet operator* (Inertia Y, Constraint S) */
   template<typename S1, int O1, typename S2, int O2>
