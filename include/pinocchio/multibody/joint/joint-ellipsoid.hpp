@@ -165,41 +165,12 @@ namespace pinocchio
         return res;
       }
 
-      /// [CRBA]  MatrixBase operator* (Constraint::Transpose S, ForceSet::Block)
-      template<typename Derived>
-      Eigen::Matrix<
-        Scalar,
-        3,
-        Derived::ColsAtCompileTime,
-        Options | Eigen::RowMajor,
-        3,
-        Derived::MaxColsAtCompileTime>
-      operator*(const Eigen::MatrixBase<Derived> & F) const
+      template<typename ForceSet>
+      typename ConstraintForceSetOp<JointMotionSubspaceEllipsoidTpl, ForceSet>::ReturnType
+      operator*(const Eigen::MatrixBase<ForceSet> & F)
       {
-        EIGEN_STATIC_ASSERT(
-          Derived::RowsAtCompileTime == 6, THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE)
-        typedef Eigen::Matrix<
-          Scalar, 3, Derived::ColsAtCompileTime, Options | Eigen::RowMajor, 3,
-          Derived::MaxColsAtCompileTime>
-          ReturnType;
-
-        ReturnType res(3, F.cols());
-
-        // First two rows: S[:, 0:2]^T * F
-        res.template topRows<2>().noalias() =
-          ref.S.template leftCols<2>().transpose() * F.derived();
-
-        // Third row: [0,0,0,0,0,1]^T · F = F.row(5)
-        res.row(2) = F.row(5);
-
-        return res;
+        return ref.S.transpose() * F.derived();
       }
-      // template<typename ForceSet>
-      // typename ConstraintForceSetOp<JointMotionSubspaceTpl, ForceSet>::ReturnType
-      // operator*(const Eigen::MatrixBase<ForceSet> & F)
-      // {
-      //   return ref.S.transpose() * F.derived();
-      // }
     }; // struct TransposeConst
 
     TransposeConst transpose() const
@@ -292,8 +263,8 @@ namespace pinocchio
 
   /* [CRBA] ForceSet operator* (Inertia Y, Constraint S) */
   template<typename S1, int O1, typename S2, int O2>
-  Eigen::Matrix<S1, 6, 3, O1> operator*(
-    const InertiaTpl<S1, O1> & Y, const JointMotionSubspaceEllipsoidTpl<S2, O2> & S)
+  Eigen::Matrix<S1, 6, 3, O1>
+  operator*(const InertiaTpl<S1, O1> & Y, const JointMotionSubspaceEllipsoidTpl<S2, O2> & S)
   {
     // none of this work at this stage: I'll squash after the review to make the code disappear.
     // // Y * S where last col is [0,0,0,0,0,1]^T (rotation around z-axis)
@@ -311,9 +282,11 @@ namespace pinocchio
     // // Column 2: Y * [0,0,0,0,0,1]^T = Y.matrix().col(5)
     // M.col(2) = Y_mat.col(Inertia::ANGULAR + 2);
     typedef Eigen::Matrix<S1, 6, 3, O1> ReturnType;
-    ReturnType M;
-    M.noalias() = Y.matrix() * S.matrix();
-    return M;
+    // ReturnType M;
+    // M.noalias() = Y.matrix() * S.matrix();
+    ReturnType res(6, S.nv());
+    motionSet::inertiaAction(Y, S.S, res);
+    return res;
   }
 
   /* [ABA] Y*S operator (Matrix6 Y, Constraint S) */
@@ -325,7 +298,7 @@ namespace pinocchio
     const Eigen::MatrixBase<Matrix6Like> & Y, const JointMotionSubspaceEllipsoidTpl<S2, O2> & S)
   {
     EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE(Matrix6Like, 6, 6);
-    return Y.derived() * S.matrix();
+    return Y * S.S;
   }
 
   template<typename _Scalar, int _Options>
