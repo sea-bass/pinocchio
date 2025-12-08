@@ -7,7 +7,7 @@
 
 #include "pinocchio/macros.hpp"
 #include "pinocchio/multibody/joint/joint-base.hpp"
-#include "pinocchio/multibody/joint-motion-subspace.hpp"
+#include "pinocchio/multibody/joint-motion-subspace-base.hpp"
 #include "pinocchio/math/sincos.hpp"
 #include "pinocchio/math/matrix.hpp"
 #include "pinocchio/spatial/spatial-axis.hpp"
@@ -83,7 +83,7 @@ namespace pinocchio
       NV = 3
     };
 
-    typedef SpatialAxis<5> AxisRotz;
+    typedef SpatialAxis<5> AxisRotZ;
 
     typedef Eigen::Matrix<Scalar, 6, 3, Options> Matrix63;
     Matrix63 S;
@@ -91,6 +91,7 @@ namespace pinocchio
     template<typename Vector3Like>
     JointMotion __mult__(const Eigen::MatrixBase<Vector3Like> & v) const
     {
+      EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Vector3Like, 3);
       // Compute first 6 rows from first 2 columns
       Eigen::Matrix<Scalar, 6, 1> result = S.template block<6, 2>(0, 0) * v.template segment<2>(0);
 
@@ -125,9 +126,9 @@ namespace pinocchio
       motionSet::se3ActionInverse(m, S.template leftCols<2>(), res.template leftCols<2>());
 
       // Third column: inverse action on [0, 0, 0, 0, 0, 1]^T
-      res.template block<3, 1>(ANGULAR, 2) = m.rotation().transpose().col(2);
       res.template block<3, 1>(LINEAR, 2).noalias() =
-        m.rotation().transpose() * SpatialAxis<5>::CartesianAxis3::cross(m.translation());
+        m.rotation().transpose() * AxisRotZ::CartesianAxis3::cross(m.translation());
+      res.template block<3, 1>(ANGULAR, 2) = m.rotation().transpose().col(2);
 
       return res;
     }
@@ -167,6 +168,7 @@ namespace pinocchio
       typename ConstraintForceSetOp<JointMotionSubspaceEllipsoidTpl, ForceSet>::ReturnType
       operator*(const Eigen::MatrixBase<ForceSet> & F)
       {
+        assert(F.rows() == 6);
         return ref.S.transpose() * F.derived();
       }
     }; // struct TransposeConst
@@ -197,12 +199,11 @@ namespace pinocchio
       ReturnType res;
 
       // Motion action on first two columns
-      typedef SpatialAxis<5> AxisZ;
       motionSet::motionAction(m, S.template leftCols<2>(), res.template leftCols<2>());
 
       // We have to use a MotionRef to deal with the output of the cross product
       MotionRef<typename ReturnType::ColXpr> v_col2(res.col(2));
-      v_col2 = m.cross(AxisRotz());
+      v_col2 = m.cross(AxisRotZ());
 
       return res;
     }
@@ -226,7 +227,7 @@ namespace pinocchio
       {
         // Exploit sparse structure of last column: [0,0,0,0,0,1]^T
         ReturnType res;
-        const typename Constraint::DenseBase & SMatrix = S.matrix();
+        const auto & SMatrix = S.matrix();
 
         // Upper-left dense 2x2 block: S^T * S
         res.template topLeftCorner<2, 2>().noalias() =
@@ -664,7 +665,7 @@ namespace pinocchio
     void computeBiais(
       JointDataDerived & data,
       const Eigen::MatrixBase<ConfigVector> & qs,
-      const Eigen::MatrixBase<TangentVector> & vs) const
+      const Eigen::MatrixBase<TangentVector> &) const
     {
       Scalar c0, s0;
       SINCOS(qs(0), &s0, &c0);
