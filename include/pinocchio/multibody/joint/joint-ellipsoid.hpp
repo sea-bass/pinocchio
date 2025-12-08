@@ -125,9 +125,7 @@ namespace pinocchio
       motionSet::se3ActionInverse(m, S.template leftCols<2>(), res.template leftCols<2>());
 
       // Third column: inverse action on [0, 0, 0, 0, 0, 1]^T
-      // angular part: R^T * e_z
       res.template block<3, 1>(ANGULAR, 2) = m.rotation().transpose().col(2);
-      // linear part: R^T * (t × e_z) = R^T * [-t_y, t_x, 0]^T
       res.template block<3, 1>(LINEAR, 2).noalias() =
         m.rotation().transpose() * SpatialAxis<5>::CartesianAxis3::cross(m.translation());
 
@@ -201,26 +199,10 @@ namespace pinocchio
       // Motion action on first two columns
       typedef SpatialAxis<5> AxisZ;
       motionSet::motionAction(m, S.template leftCols<2>(), res.template leftCols<2>());
-      // res.col(2).noalias() = m.cross(());
 
       // We have to use a MotionRef to deal with the output of the cross product
       MotionRef<typename ReturnType::ColXpr> v_col2(res.col(2));
       v_col2 = m.cross(AxisRotz());
-
-      // // Motion action on third column [0, 0, 0, 0, 0, 1]^T
-      // // [v; w] × [0; e_z] = [v × e_z; w × e_z]
-      // const typename MotionDense<MotionDerived>::ConstLinearType & v_lin = m.linear();
-      // const typename MotionDense<MotionDerived>::ConstAngularType & w = m.angular();
-
-      // // v × e_z = [v[1], -v[0], 0]
-      // res(LINEAR + 0, 2) = v_lin[1];
-      // res(LINEAR + 1, 2) = -v_lin[0];
-      // res(LINEAR + 2, 2) = Scalar(0);
-
-      // // w × e_z = [w[1], -w[0], 0]
-      // res(ANGULAR + 0, 2) = w[1];
-      // res(ANGULAR + 1, 2) = -w[0];
-      // res(ANGULAR + 2, 2) = Scalar(0);
 
       return res;
     }
@@ -249,6 +231,7 @@ namespace pinocchio
         // Upper-left dense 2x2 block: S^T * S
         res.template topLeftCorner<2, 2>().noalias() =
           SMatrix.template leftCols<2>().transpose() * SMatrix.template leftCols<2>();
+
         // Third column/row: S(5, 0), S(5, 1), 1
         res(0, 2) = SMatrix(5, 0);
         res(1, 2) = SMatrix(5, 1);
@@ -266,24 +249,7 @@ namespace pinocchio
   Eigen::Matrix<S1, 6, 3, O1>
   operator*(const InertiaTpl<S1, O1> & Y, const JointMotionSubspaceEllipsoidTpl<S2, O2> & S)
   {
-    // none of this work at this stage: I'll squash after the review to make the code disappear.
-    // // Y * S where last col is [0,0,0,0,0,1]^T (rotation around z-axis)
-    // // So last column of M is Y * e_z = Y.matrix().col(5)
-    // typedef Eigen::Matrix<S1, 6, 3, O1> ReturnType;
-    // typedef InertiaTpl<S1, O1> Inertia;
-    // ReturnType M;
-
-    // // Cache Y.matrix() to avoid computing it twice
-    // const typename Inertia::Matrix6 Y_mat = Y.matrix();
-
-    // // Columns 0-1: Y * S.template leftCols<2>()
-    // M.template leftCols<2>().noalias() = Y_mat * S.matrix().template leftCols<2>();
-
-    // // Column 2: Y * [0,0,0,0,0,1]^T = Y.matrix().col(5)
-    // M.col(2) = Y_mat.col(Inertia::ANGULAR + 2);
     typedef Eigen::Matrix<S1, 6, 3, O1> ReturnType;
-    // ReturnType M;
-    // M.noalias() = Y.matrix() * S.matrix();
     ReturnType res(6, S.nv());
     motionSet::inertiaAction(Y, S.S, res);
     return res;
@@ -615,7 +581,6 @@ namespace pinocchio
     }
 
     /// \returns An expression of *this with the Scalar type casted to NewScalar.
-    /// TU todo.
     template<typename NewScalar>
     JointModelEllipsoidTpl<NewScalar, Options> cast() const
     {
