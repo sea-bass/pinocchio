@@ -141,7 +141,7 @@ namespace pinocchio
     struct TransposeConst : JointMotionSubspaceTransposeBase<JointMotionSubspaceEllipsoidTpl>
     {
       const JointMotionSubspaceEllipsoidTpl & ref;
-      TransposeConst(const JointMotionSubspaceEllipsoidTpl & ref)
+      explicit TransposeConst(const JointMotionSubspaceEllipsoidTpl & ref)
       : ref(ref)
       {
       }
