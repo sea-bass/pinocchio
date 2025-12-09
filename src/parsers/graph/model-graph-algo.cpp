@@ -226,7 +226,7 @@ namespace pinocchio
         }
         ReturnType operator()(const JointEllipsoid & joint) const
         {
-          return JointModelEllipsoid(joint.radius_a, joint.radius_b, joint.radius_c);
+          return JointModelEllipsoid(joint.radius_x, joint.radius_y, joint.radius_z);
         }
         ReturnType operator()(const JointUniversal & joint) const
         {

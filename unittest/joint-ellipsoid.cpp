@@ -52,9 +52,9 @@ Eigen::Matrix<double, 6, 3> computeMotionSubspaceDerivative(
   double qdot2 = vs(2);
 
   // Get radii
-  const double radius_a = jmodel.radius_a;
-  const double radius_b = jmodel.radius_b;
-  const double radius_c = jmodel.radius_c;
+  const double radius_x = jmodel.radius_x;
+  const double radius_y = jmodel.radius_y;
+  const double radius_z = jmodel.radius_z;
 
   // Derivatives of normal vector components w.r.t. velocities
   double dndotx_dqdot1 = c1;
@@ -76,39 +76,39 @@ Eigen::Matrix<double, 6, 3> computeMotionSubspaceDerivative(
   double
     Sdot_11 =
       qdot0
-        * (-dndoty_dqdot0 * radius_b * (-c0 * c2 * s1 + s0 * s2) + dndotz_dqdot0 * radius_c * (c0 * s2 + c2 * s0 * s1) + radius_b * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot0_dq0 + radius_c * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot0_dq0)
-      + qdot1 * (dndoty_dqdot0 * radius_b * c1 * c2 * s0 - dndotz_dqdot0 * radius_c * c0 * c1 * c2 + radius_b * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot0_dq1 + radius_c * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot0_dq1)
+        * (-dndoty_dqdot0 * radius_y * (-c0 * c2 * s1 + s0 * s2) + dndotz_dqdot0 * radius_z * (c0 * s2 + c2 * s0 * s1) + radius_y * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot0_dq0 + radius_z * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot0_dq0)
+      + qdot1 * (dndoty_dqdot0 * radius_y * c1 * c2 * s0 - dndotz_dqdot0 * radius_z * c0 * c1 * c2 + radius_y * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot0_dq1 + radius_z * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot0_dq1)
       - qdot2
-          * (dndoty_dqdot0 * radius_b * (-c0 * c2 + s0 * s1 * s2) - dndotz_dqdot0 * radius_c * (c0 * s1 * s2 + c2 * s0));
+          * (dndoty_dqdot0 * radius_y * (-c0 * c2 + s0 * s1 * s2) - dndotz_dqdot0 * radius_z * (c0 * s1 * s2 + c2 * s0));
 
   double
     Sdot_12 =
-      qdot0 * (-dndoty_dqdot1 * radius_b * (-c0 * c2 * s1 + s0 * s2) + dndotz_dqdot1 * radius_c * (c0 * s2 + c2 * s0 * s1) + radius_b * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot0_dq1 + radius_c * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot0_dq1) + qdot1 * (-dndotx_dqdot1 * radius_a * c2 * s1 + dndoty_dqdot1 * radius_b * c1 * c2 * s0 - dndotz_dqdot1 * radius_c * c0 * c1 * c2 + radius_a * c1 * c2 * d_dndotx_dqdot1_dq1 + radius_b * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot1_dq1 + radius_c * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot1_dq1)
+      qdot0 * (-dndoty_dqdot1 * radius_y * (-c0 * c2 * s1 + s0 * s2) + dndotz_dqdot1 * radius_z * (c0 * s2 + c2 * s0 * s1) + radius_y * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot0_dq1 + radius_z * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot0_dq1) + qdot1 * (-dndotx_dqdot1 * radius_x * c2 * s1 + dndoty_dqdot1 * radius_y * c1 * c2 * s0 - dndotz_dqdot1 * radius_z * c0 * c1 * c2 + radius_x * c1 * c2 * d_dndotx_dqdot1_dq1 + radius_y * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot1_dq1 + radius_z * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot1_dq1)
       - qdot2
-          * (dndotx_dqdot1 * radius_a * c1 * s2 + dndoty_dqdot1 * radius_b * (-c0 * c2 + s0 * s1 * s2) - dndotz_dqdot1 * radius_c * (c0 * s1 * s2 + c2 * s0));
+          * (dndotx_dqdot1 * radius_x * c1 * s2 + dndoty_dqdot1 * radius_y * (-c0 * c2 + s0 * s1 * s2) - dndotz_dqdot1 * radius_z * (c0 * s1 * s2 + c2 * s0));
 
   double
-    Sdot_21 = -qdot0 * (dndoty_dqdot0 * radius_b * (c0 * s1 * s2 + c2 * s0) + dndotz_dqdot0 * radius_c * (-c0 * c2 + s0 * s1 * s2) + radius_b * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot0_dq0 - radius_c * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot0_dq0) - qdot1 * (dndoty_dqdot0 * radius_b * c1 * s0 * s2 - dndotz_dqdot0 * radius_c * c0 * c1 * s2 + radius_b * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot0_dq1 - radius_c * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot0_dq1)
+    Sdot_21 = -qdot0 * (dndoty_dqdot0 * radius_y * (c0 * s1 * s2 + c2 * s0) + dndotz_dqdot0 * radius_z * (-c0 * c2 + s0 * s1 * s2) + radius_y * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot0_dq0 - radius_z * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot0_dq0) - qdot1 * (dndoty_dqdot0 * radius_y * c1 * s0 * s2 - dndotz_dqdot0 * radius_z * c0 * c1 * s2 + radius_y * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot0_dq1 - radius_z * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot0_dq1)
               - qdot2
-                  * (dndoty_dqdot0 * radius_b * (c0 * s2 + c2 * s0 * s1) + dndotz_dqdot0 * radius_c * (-c0 * c2 * s1 + s0 * s2));
+                  * (dndoty_dqdot0 * radius_y * (c0 * s2 + c2 * s0 * s1) + dndotz_dqdot0 * radius_z * (-c0 * c2 * s1 + s0 * s2));
 
   double
     Sdot_22 =
-      -qdot0 * (dndoty_dqdot1 * radius_b * (c0 * s1 * s2 + c2 * s0) + dndotz_dqdot1 * radius_c * (-c0 * c2 + s0 * s1 * s2) + radius_b * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot0_dq1 - radius_c * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot0_dq1) + qdot1 * (dndotx_dqdot1 * radius_a * s1 * s2 - dndoty_dqdot1 * radius_b * c1 * s0 * s2 + dndotz_dqdot1 * radius_c * c0 * c1 * s2 - radius_a * c1 * s2 * d_dndotx_dqdot1_dq1 - radius_b * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot1_dq1 + radius_c * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot1_dq1)
+      -qdot0 * (dndoty_dqdot1 * radius_y * (c0 * s1 * s2 + c2 * s0) + dndotz_dqdot1 * radius_z * (-c0 * c2 + s0 * s1 * s2) + radius_y * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot0_dq1 - radius_z * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot0_dq1) + qdot1 * (dndotx_dqdot1 * radius_x * s1 * s2 - dndoty_dqdot1 * radius_y * c1 * s0 * s2 + dndotz_dqdot1 * radius_z * c0 * c1 * s2 - radius_x * c1 * s2 * d_dndotx_dqdot1_dq1 - radius_y * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot1_dq1 + radius_z * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot1_dq1)
       - qdot2
-          * (dndotx_dqdot1 * radius_a * c1 * c2 + dndoty_dqdot1 * radius_b * (c0 * s2 + c2 * s0 * s1) + dndotz_dqdot1 * radius_c * (-c0 * c2 * s1 + s0 * s2));
+          * (dndotx_dqdot1 * radius_x * c1 * c2 + dndoty_dqdot1 * radius_y * (c0 * s2 + c2 * s0 * s1) + dndotz_dqdot1 * radius_z * (-c0 * c2 * s1 + s0 * s2));
 
   double Sdot_31 =
     -qdot0 * c1
-      * (dndoty_dqdot0 * radius_b * c0 + dndotz_dqdot0 * radius_c * s0 + radius_b * s0 * d_dndoty_dqdot0_dq0 - radius_c * c0 * d_dndotz_dqdot0_dq0)
+      * (dndoty_dqdot0 * radius_y * c0 + dndotz_dqdot0 * radius_z * s0 + radius_y * s0 * d_dndoty_dqdot0_dq0 - radius_z * c0 * d_dndotz_dqdot0_dq0)
     + qdot1
-        * (-c1 * (radius_b * s0 * d_dndoty_dqdot0_dq1 - radius_c * c0 * d_dndotz_dqdot0_dq1) + s1 * (dndoty_dqdot0 * radius_b * s0 - dndotz_dqdot0 * radius_c * c0));
+        * (-c1 * (radius_y * s0 * d_dndoty_dqdot0_dq1 - radius_z * c0 * d_dndotz_dqdot0_dq1) + s1 * (dndoty_dqdot0 * radius_y * s0 - dndotz_dqdot0 * radius_z * c0));
 
   double Sdot_32 =
     -qdot0 * c1
-      * (dndoty_dqdot1 * radius_b * c0 + dndotz_dqdot1 * radius_c * s0 + radius_b * s0 * d_dndoty_dqdot0_dq1 - radius_c * c0 * d_dndotz_dqdot0_dq1)
+      * (dndoty_dqdot1 * radius_y * c0 + dndotz_dqdot1 * radius_z * s0 + radius_y * s0 * d_dndoty_dqdot0_dq1 - radius_z * c0 * d_dndotz_dqdot0_dq1)
     + qdot1
-        * (dndotx_dqdot1 * radius_a * c1 + dndoty_dqdot1 * radius_b * s0 * s1 - dndotz_dqdot1 * radius_c * c0 * s1 + radius_a * s1 * d_dndotx_dqdot1_dq1 - radius_b * c1 * s0 * d_dndoty_dqdot1_dq1 + radius_c * c0 * c1 * d_dndotz_dqdot1_dq1);
+        * (dndotx_dqdot1 * radius_x * c1 + dndoty_dqdot1 * radius_y * s0 * s1 - dndotz_dqdot1 * radius_z * c0 * s1 + radius_x * s1 * d_dndotx_dqdot1_dq1 - radius_y * c1 * s0 * d_dndoty_dqdot1_dq1 + radius_z * c0 * c1 * d_dndotz_dqdot1_dq1);
 
   // Angular part (rows 4-6)
   double Sdot_41 = -(qdot1 * c2 * s1 + qdot2 * c1 * s2);
@@ -191,7 +191,7 @@ SE3::Vector3 computeTranslations(const JointModelEllipsoid & jmodel, const Eigen
   ny = -s0 * c1;
   nz = c0 * c1;
 
-  return SE3::Vector3(jmodel.radius_a * nx, jmodel.radius_b * ny, jmodel.radius_c * nz);
+  return SE3::Vector3(jmodel.radius_x * nx, jmodel.radius_y * ny, jmodel.radius_z * nz);
 }
 
 SE3::Vector3 computeTranslationVelocities(
@@ -203,9 +203,9 @@ SE3::Vector3 computeTranslationVelocities(
   SINCOS(qs(1), &s1, &c1);
 
   SE3::Vector3 v;
-  v(0) = jmodel.radius_a * c1 * vs(1);
-  v(1) = jmodel.radius_b * (-c0 * c1 * vs(0) + s0 * s1 * vs(1));
-  v(2) = jmodel.radius_c * (-s0 * c1 * vs(0) - c0 * s1 * vs(1));
+  v(0) = jmodel.radius_x * c1 * vs(1);
+  v(1) = jmodel.radius_y * (-c0 * c1 * vs(0) + s0 * s1 * vs(1));
+  v(2) = jmodel.radius_z * (-s0 * c1 * vs(0) - c0 * s1 * vs(1));
   return v;
 }
 
@@ -220,12 +220,12 @@ SE3::Vector3 computeTranslationAccelerations(
   double c1, s1;
   SINCOS(qs(1), &s1, &c1);
   SE3::Vector3 a;
-  a(0) = jmodel.radius_a * (-s1 * vs(1) * vs(1) + c1 * as(1));
+  a(0) = jmodel.radius_x * (-s1 * vs(1) * vs(1) + c1 * as(1));
   a(1) =
-    jmodel.radius_b
+    jmodel.radius_y
     * (s0 * c1 * vs(0) * vs(0) + c0 * s1 * vs(0) * vs(1) - c0 * c1 * as(0) + c0 * s1 * vs(1) * vs(0) + s0 * c1 * vs(1) * vs(1) + s0 * s1 * as(1));
   a(2) =
-    jmodel.radius_c
+    jmodel.radius_z
     * (-c0 * c1 * vs(0) * vs(0) + s0 * s1 * vs(0) * vs(1) - s0 * c1 * as(0) + s0 * s1 * vs(1) * vs(0) - c0 * c1 * vs(1) * vs(1) - c0 * s1 * as(1));
   return a;
 }
@@ -354,16 +354,16 @@ BOOST_AUTO_TEST_CASE(vsCompositeTxTyTzRxRyRz)
   typedef SE3::Matrix3 Matrix3;
 
   // Ellipsoid parameters
-  double radius_a = 2.0;
-  double radius_b = 1.5;
-  double radius_c = 1.0;
+  double radius_x = 2.0;
+  double radius_y = 1.5;
+  double radius_z = 1.0;
 
   Inertia inertia = Inertia::Identity();
   SE3 pos = SE3::Identity();
 
   // Create Ellipsoid model
   Model modelEllipsoid;
-  JointModelEllipsoid jointModelEllipsoid(radius_a, radius_b, radius_c);
+  JointModelEllipsoid jointModelEllipsoid(radius_x, radius_y, radius_z);
   addJointAndBody(modelEllipsoid, jointModelEllipsoid, 0, pos, "ellipsoid", inertia);
 
   // Create Composite model (Tx, Ty, Tz, Rx, Ry, Rz)
@@ -459,15 +459,15 @@ BOOST_AUTO_TEST_CASE(RNEAvsABA)
   typedef SE3::Vector3 Vector3;
   typedef SE3::Matrix3 Matrix3;
 
-  double radius_a = 2.5;
-  double radius_b = 1.8;
-  double radius_c = 1.2;
+  double radius_x = 2.5;
+  double radius_y = 1.8;
+  double radius_z = 1.2;
 
   Inertia inertia(1.0, Vector3::Zero(), Matrix3::Identity());
   SE3 pos = SE3::Identity();
 
   Model model;
-  JointModelEllipsoid jointModel(radius_a, radius_b, radius_c);
+  JointModelEllipsoid jointModel(radius_x, radius_y, radius_z);
   addJointAndBody(model, jointModel, 0, pos, "ellipsoid", inertia);
 
   Data data(model);
@@ -502,11 +502,11 @@ BOOST_AUTO_TEST_CASE(testSdotFiniteDifferences)
   using namespace pinocchio;
 
   // Ellipsoid parameters
-  double radius_a = 2.0;
-  double radius_b = 1.5;
-  double radius_c = 1.0;
+  double radius_x = 2.0;
+  double radius_y = 1.5;
+  double radius_z = 1.0;
 
-  JointModelEllipsoid jmodel(radius_a, radius_b, radius_c);
+  JointModelEllipsoid jmodel(radius_x, radius_y, radius_z);
   jmodel.setIndexes(0, 0, 0);
 
   JointDataEllipsoid jdata = jmodel.createData();
@@ -537,11 +537,11 @@ BOOST_AUTO_TEST_CASE(testBiaisVsSdotTimesVelocity)
   using namespace pinocchio;
 
   // Ellipsoid parameters
-  double radius_a = 2.0;
-  double radius_b = 1.5;
-  double radius_c = 1.0;
+  double radius_x = 2.0;
+  double radius_y = 1.5;
+  double radius_z = 1.0;
 
-  JointModelEllipsoid jmodel(radius_a, radius_b, radius_c);
+  JointModelEllipsoid jmodel(radius_x, radius_y, radius_z);
   jmodel.setIndexes(0, 0, 0);
 
   JointDataEllipsoid jdata = jmodel.createData();

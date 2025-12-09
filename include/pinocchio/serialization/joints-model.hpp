@@ -214,9 +214,9 @@ namespace boost
     {
       typedef pinocchio::JointModelEllipsoidTpl<Scalar, Options> JointType;
       fix::serialize(ar, *static_cast<pinocchio::JointModelBase<JointType> *>(&joint), version);
-      ar & make_nvp("radius_a", joint.radius_a);
-      ar & make_nvp("radius_b", joint.radius_b);
-      ar & make_nvp("radius_c", joint.radius_c);
+      ar & make_nvp("radius_x", joint.radius_x);
+      ar & make_nvp("radius_y", joint.radius_y);
+      ar & make_nvp("radius_z", joint.radius_z);
     }
 
     template<class Archive, typename Scalar, int Options>

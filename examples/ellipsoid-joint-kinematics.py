@@ -22,17 +22,17 @@ except ImportError:
     VISUALIZE = False
 
 
-def create_ellipsoid_robot(radius_a=0.5, radius_b=0.3, radius_c=0.2):
+def create_ellipsoid_robot(radius_x=0.5, radius_y=0.3, radius_z=0.2):
     """
     Create a simple robot with an ellipsoid joint.
 
     Parameters
     ----------
-    radius_a : float
+    radius_x : float
         Ellipsoid radius along x-axis
-    radius_b : float
+    radius_y : float
         Ellipsoid radius along y-axis
-    radius_c : float
+    radius_z : float
         Ellipsoid radius along z-axis
 
     Returns
@@ -46,7 +46,7 @@ def create_ellipsoid_robot(radius_a=0.5, radius_b=0.3, radius_c=0.2):
     joint_name = "ellipsoid"
     joint_id = model.addJoint(
         0,  # parent joint id (0 = universe)
-        pin.JointModelEllipsoid(radius_a, radius_b, radius_c),
+        pin.JointModelEllipsoid(radius_x, radius_y, radius_z),
         pin.SE3.Identity(),
         joint_name,
     )
@@ -103,14 +103,14 @@ def compute_kinematics_example():
     print("=" * 60)
 
     # Create model with ellipsoid radii
-    radius_a, radius_b, radius_c = 0.5, 0.3, 0.2
-    model = create_ellipsoid_robot(radius_a, radius_b, radius_c)
+    radius_x, radius_y, radius_z = 0.5, 0.3, 0.2
+    model = create_ellipsoid_robot(radius_x, radius_y, radius_z)
     data = model.createData()
 
     print("\nEllipsoid parameters:")
-    print(f"  radius_a (x-axis): {radius_a}")
-    print(f"  radius_b (y-axis): {radius_b}")
-    print(f"  radius_c (z-axis): {radius_c}")
+    print(f"  radius_x (x-axis): {radius_x}")
+    print(f"  radius_y (y-axis): {radius_y}")
+    print(f"  radius_z (z-axis): {radius_z}")
 
     # Test different configurations
     configs = [
@@ -134,7 +134,7 @@ def compute_kinematics_example():
         print(f"  Distance from origin: {np.linalg.norm(position):.4f}")
 
         # Verify point is on ellipsoid surface
-        normalized_pos = position / np.array([radius_a, radius_b, radius_c])
+        normalized_pos = position / np.array([radius_x, radius_y, radius_z])
 
         # checking the quadratic form of the ellipsoid equation
         on_surface = np.abs(np.linalg.norm(normalized_pos) - 1.0) < 1e-10
@@ -221,15 +221,15 @@ def visualize_ellipsoid_motion():
     print("=" * 60)
 
     # Create model
-    radius_a, radius_b, radius_c = 0.5, 0.3, 0.2
-    model = create_ellipsoid_robot(radius_a, radius_b, radius_c)
+    radius_x, radius_y, radius_z = 0.5, 0.3, 0.2
+    model = create_ellipsoid_robot(radius_x, radius_y, radius_z)
 
     # Add visual geometry
     try:
         geom_model = pin.GeometryModel()
 
         # 1. Add the ELLIPSOID SURFACE as a visual object
-        ellipsoid_shape = pin.hppfcl.Ellipsoid(radius_a, radius_b, radius_c)
+        ellipsoid_shape = pin.hppfcl.Ellipsoid(radius_x, radius_y, radius_z)
         ellipsoid_geom = pin.GeometryObject(
             "ellipsoid_surface",
             0,  # Universe frame

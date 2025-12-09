@@ -401,31 +401,32 @@ namespace pinocchio
 
     typedef typename Transformation_t::Vector3 Vector3;
 
-    Scalar radius_a;
-    Scalar radius_b;
-    Scalar radius_c;
+    Scalar radius_x;
+    Scalar radius_y;
+    Scalar radius_z;
 
     JointDataDerived createData() const
     {
       return JointDataDerived();
     }
 
-    /// @brief Default constructor. Creates a sphere (0.01, 0.01, 0.01).
+    /// @brief Default constructor. Creates a spherical joint with all radii equal to 0.
     JointModelEllipsoidTpl()
-    : radius_a(Scalar(0.01))
-    , radius_b(Scalar(0.01))
-    , radius_c(Scalar(0.01))
+    : radius_x(Scalar(0.0))
+    , radius_y(Scalar(0.0))
+    , radius_z(Scalar(0.0))
     {
     }
 
     /// @brief Constructor with specified radii.
-    /// @param a Semi-axis length along x-direction
-    /// @param b Semi-axis length along y-direction
-    /// @param c Semi-axis length along z-direction
-    JointModelEllipsoidTpl(const Scalar & a, const Scalar & b, const Scalar & c)
-    : radius_a(a)
-    , radius_b(b)
-    , radius_c(c)
+    /// @param radius_x Semi-axis length along x-direction
+    /// @param radius_y Semi-axis length along y-direction
+    /// @param radius_z Semi-axis length along z-direction
+    JointModelEllipsoidTpl(
+      const Scalar & radius_x, const Scalar & radius_y, const Scalar & radius_z)
+    : radius_x(radius_x)
+    , radius_y(radius_y)
+    , radius_z(radius_z)
     {
     }
 
@@ -463,7 +464,7 @@ namespace pinocchio
       ny = -s0 * c1;
       nz = c0 * c1;
 
-      data.M.translation() << radius_a * nx, radius_b * ny, radius_c * nz;
+      data.M.translation() << radius_x * nx, radius_y * ny, radius_z * nz;
     }
 
     template<typename ConfigVector>
@@ -587,9 +588,9 @@ namespace pinocchio
     {
       typedef JointModelEllipsoidTpl<NewScalar, Options> ReturnType;
       ReturnType res{
-        ScalarCast<NewScalar, Scalar>::cast(radius_a),
-        ScalarCast<NewScalar, Scalar>::cast(radius_b),
-        ScalarCast<NewScalar, Scalar>::cast(radius_c)};
+        ScalarCast<NewScalar, Scalar>::cast(radius_x),
+        ScalarCast<NewScalar, Scalar>::cast(radius_y),
+        ScalarCast<NewScalar, Scalar>::cast(radius_z)};
       res.setIndexes(id(), idx_q(), idx_v(), idx_vExtended());
       return res;
     }
@@ -631,24 +632,24 @@ namespace pinocchio
     {
       Scalar S_11, S_21, S_31, S_12, S_22, S_32;
       // clang-format off
-      S_11 = dndoty_dqdot0 * radius_b * (c0 * s2 + c2 * s0 * s1)
-             + dndotz_dqdot0 * radius_c * (-c0 * c2 * s1 + s0 * s2);
+      S_11 = dndoty_dqdot0 * radius_y * (c0 * s2 + c2 * s0 * s1)
+             + dndotz_dqdot0 * radius_z * (-c0 * c2 * s1 + s0 * s2);
 
-      S_21 = -dndoty_dqdot0 * radius_b * (-c0 * c2 + s0 * s1 * s2)
-             + dndotz_dqdot0 * radius_c * (c0 * s1 * s2 + c2 * s0);
+      S_21 = -dndoty_dqdot0 * radius_y * (-c0 * c2 + s0 * s1 * s2)
+             + dndotz_dqdot0 * radius_z * (c0 * s1 * s2 + c2 * s0);
 
-      S_31 = c1 * (-dndoty_dqdot0 * radius_b * s0 + dndotz_dqdot0 * radius_c * c0);
+      S_31 = c1 * (-dndoty_dqdot0 * radius_y * s0 + dndotz_dqdot0 * radius_z * c0);
 
-      S_12 = dndotx_dqdot1 * radius_a * c1 * c2
-             + dndoty_dqdot1 * radius_b * (c0 * s2 + c2 * s0 * s1)
-             + dndotz_dqdot1 * radius_c * (-c0 * c2 * s1 + s0 * s2);
+      S_12 = dndotx_dqdot1 * radius_x * c1 * c2
+             + dndoty_dqdot1 * radius_y * (c0 * s2 + c2 * s0 * s1)
+             + dndotz_dqdot1 * radius_z * (-c0 * c2 * s1 + s0 * s2);
 
-      S_22 = -dndotx_dqdot1 * radius_a * c1 * s2
-             - dndoty_dqdot1 * radius_b * (-c0 * c2 + s0 * s1 * s2)
-             + dndotz_dqdot1 * radius_c * (c0 * s1 * s2 + c2 * s0);
+      S_22 = -dndotx_dqdot1 * radius_x * c1 * s2
+             - dndoty_dqdot1 * radius_y * (-c0 * c2 + s0 * s1 * s2)
+             + dndotz_dqdot1 * radius_z * (c0 * s1 * s2 + c2 * s0);
 
-      S_32 = dndotx_dqdot1 * radius_a * s1 - dndoty_dqdot1 * radius_b * c1 * s0
-             + dndotz_dqdot1 * radius_c * c0 * c1;
+      S_32 = dndotx_dqdot1 * radius_x * s1 - dndoty_dqdot1 * radius_y * c1 * s0
+             + dndotz_dqdot1 * radius_z * c0 * c1;
 
       // Write directly to the internal matrix S, not to matrix() which returns a copy
       data.S.S << S_11   , S_12  , Scalar(0),
@@ -728,46 +729,46 @@ namespace pinocchio
       // Row 1, Column 1
       Sdot_11 =
         qdot0
-          * (-dndoty_dqdot0 * radius_b * (-c0 * c2 * s1 + s0 * s2) + dndotz_dqdot0 * radius_c * (c0 * s2 + c2 * s0 * s1) + radius_b * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot0_dq0 + radius_c * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot0_dq0)
+          * (-dndoty_dqdot0 * radius_y * (-c0 * c2 * s1 + s0 * s2) + dndotz_dqdot0 * radius_z * (c0 * s2 + c2 * s0 * s1) + radius_y * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot0_dq0 + radius_z * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot0_dq0)
         + qdot1
-            * (dndoty_dqdot0 * radius_b * c1 * c2 * s0 - dndotz_dqdot0 * radius_c * c0 * c1 * c2 + radius_b * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot0_dq1 + radius_c * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot0_dq1)
+            * (dndoty_dqdot0 * radius_y * c1 * c2 * s0 - dndotz_dqdot0 * radius_z * c0 * c1 * c2 + radius_y * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot0_dq1 + radius_z * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot0_dq1)
         - qdot2
-            * (dndoty_dqdot0 * radius_b * (-c0 * c2 + s0 * s1 * s2) - dndotz_dqdot0 * radius_c * (c0 * s1 * s2 + c2 * s0));
+            * (dndoty_dqdot0 * radius_y * (-c0 * c2 + s0 * s1 * s2) - dndotz_dqdot0 * radius_z * (c0 * s1 * s2 + c2 * s0));
 
       // Row 1, Column 2
       Sdot_12 =
         qdot0
-          * (-dndoty_dqdot1 * radius_b * (-c0 * c2 * s1 + s0 * s2) + dndotz_dqdot1 * radius_c * (c0 * s2 + c2 * s0 * s1) + radius_b * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot0_dq1 + radius_c * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot0_dq1)
-        + qdot1 * (-dndotx_dqdot1 * radius_a * c2 * s1 + dndoty_dqdot1 * radius_b * c1 * c2 * s0 - dndotz_dqdot1 * radius_c * c0 * c1 * c2 + radius_a * c1 * c2 * d_dndotx_dqdot1_dq1 + radius_b * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot1_dq1 + radius_c * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot1_dq1) - qdot2 * (dndotx_dqdot1 * radius_a * c1 * s2 + dndoty_dqdot1 * radius_b * (-c0 * c2 + s0 * s1 * s2) - dndotz_dqdot1 * radius_c * (c0 * s1 * s2 + c2 * s0));
+          * (-dndoty_dqdot1 * radius_y * (-c0 * c2 * s1 + s0 * s2) + dndotz_dqdot1 * radius_z * (c0 * s2 + c2 * s0 * s1) + radius_y * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot0_dq1 + radius_z * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot0_dq1)
+        + qdot1 * (-dndotx_dqdot1 * radius_x * c2 * s1 + dndoty_dqdot1 * radius_y * c1 * c2 * s0 - dndotz_dqdot1 * radius_z * c0 * c1 * c2 + radius_x * c1 * c2 * d_dndotx_dqdot1_dq1 + radius_y * (c0 * s2 + c2 * s0 * s1) * d_dndoty_dqdot1_dq1 + radius_z * (-c0 * c2 * s1 + s0 * s2) * d_dndotz_dqdot1_dq1) - qdot2 * (dndotx_dqdot1 * radius_x * c1 * s2 + dndoty_dqdot1 * radius_y * (-c0 * c2 + s0 * s1 * s2) - dndotz_dqdot1 * radius_z * (c0 * s1 * s2 + c2 * s0));
 
       // Row 2, Column 1
       Sdot_21 =
         -qdot0
-          * (dndoty_dqdot0 * radius_b * (c0 * s1 * s2 + c2 * s0) + dndotz_dqdot0 * radius_c * (-c0 * c2 + s0 * s1 * s2) + radius_b * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot0_dq0 - radius_c * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot0_dq0)
+          * (dndoty_dqdot0 * radius_y * (c0 * s1 * s2 + c2 * s0) + dndotz_dqdot0 * radius_z * (-c0 * c2 + s0 * s1 * s2) + radius_y * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot0_dq0 - radius_z * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot0_dq0)
         - qdot1
-            * (dndoty_dqdot0 * radius_b * c1 * s0 * s2 - dndotz_dqdot0 * radius_c * c0 * c1 * s2 + radius_b * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot0_dq1 - radius_c * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot0_dq1)
+            * (dndoty_dqdot0 * radius_y * c1 * s0 * s2 - dndotz_dqdot0 * radius_z * c0 * c1 * s2 + radius_y * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot0_dq1 - radius_z * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot0_dq1)
         - qdot2
-            * (dndoty_dqdot0 * radius_b * (c0 * s2 + c2 * s0 * s1) + dndotz_dqdot0 * radius_c * (-c0 * c2 * s1 + s0 * s2));
+            * (dndoty_dqdot0 * radius_y * (c0 * s2 + c2 * s0 * s1) + dndotz_dqdot0 * radius_z * (-c0 * c2 * s1 + s0 * s2));
 
       // Row 2, Column 2
       Sdot_22 =
         -qdot0
-          * (dndoty_dqdot1 * radius_b * (c0 * s1 * s2 + c2 * s0) + dndotz_dqdot1 * radius_c * (-c0 * c2 + s0 * s1 * s2) + radius_b * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot0_dq1 - radius_c * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot0_dq1)
-        + qdot1 * (dndotx_dqdot1 * radius_a * s1 * s2 - dndoty_dqdot1 * radius_b * c1 * s0 * s2 + dndotz_dqdot1 * radius_c * c0 * c1 * s2 - radius_a * c1 * s2 * d_dndotx_dqdot1_dq1 - radius_b * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot1_dq1 + radius_c * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot1_dq1) - qdot2 * (dndotx_dqdot1 * radius_a * c1 * c2 + dndoty_dqdot1 * radius_b * (c0 * s2 + c2 * s0 * s1) + dndotz_dqdot1 * radius_c * (-c0 * c2 * s1 + s0 * s2));
+          * (dndoty_dqdot1 * radius_y * (c0 * s1 * s2 + c2 * s0) + dndotz_dqdot1 * radius_z * (-c0 * c2 + s0 * s1 * s2) + radius_y * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot0_dq1 - radius_z * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot0_dq1)
+        + qdot1 * (dndotx_dqdot1 * radius_x * s1 * s2 - dndoty_dqdot1 * radius_y * c1 * s0 * s2 + dndotz_dqdot1 * radius_z * c0 * c1 * s2 - radius_x * c1 * s2 * d_dndotx_dqdot1_dq1 - radius_y * (-c0 * c2 + s0 * s1 * s2) * d_dndoty_dqdot1_dq1 + radius_z * (c0 * s1 * s2 + c2 * s0) * d_dndotz_dqdot1_dq1) - qdot2 * (dndotx_dqdot1 * radius_x * c1 * c2 + dndoty_dqdot1 * radius_y * (c0 * s2 + c2 * s0 * s1) + dndotz_dqdot1 * radius_z * (-c0 * c2 * s1 + s0 * s2));
 
       // Row 3, Column 1
       Sdot_31 =
         -qdot0 * c1
-          * (dndoty_dqdot0 * radius_b * c0 + dndotz_dqdot0 * radius_c * s0 + radius_b * s0 * d_dndoty_dqdot0_dq0 - radius_c * c0 * d_dndotz_dqdot0_dq0)
+          * (dndoty_dqdot0 * radius_y * c0 + dndotz_dqdot0 * radius_z * s0 + radius_y * s0 * d_dndoty_dqdot0_dq0 - radius_z * c0 * d_dndotz_dqdot0_dq0)
         + qdot1
-            * (-c1 * (radius_b * s0 * d_dndoty_dqdot0_dq1 - radius_c * c0 * d_dndotz_dqdot0_dq1) + s1 * (dndoty_dqdot0 * radius_b * s0 - dndotz_dqdot0 * radius_c * c0));
+            * (-c1 * (radius_y * s0 * d_dndoty_dqdot0_dq1 - radius_z * c0 * d_dndotz_dqdot0_dq1) + s1 * (dndoty_dqdot0 * radius_y * s0 - dndotz_dqdot0 * radius_z * c0));
 
       // Row 3, Column 2
       Sdot_32 =
         -qdot0 * c1
-          * (dndoty_dqdot1 * radius_b * c0 + dndotz_dqdot1 * radius_c * s0 + radius_b * s0 * d_dndoty_dqdot0_dq1 - radius_c * c0 * d_dndotz_dqdot0_dq1)
+          * (dndoty_dqdot1 * radius_y * c0 + dndotz_dqdot1 * radius_z * s0 + radius_y * s0 * d_dndoty_dqdot0_dq1 - radius_z * c0 * d_dndotz_dqdot0_dq1)
         + qdot1
-            * (dndotx_dqdot1 * radius_a * c1 + dndoty_dqdot1 * radius_b * s0 * s1 - dndotz_dqdot1 * radius_c * c0 * s1 + radius_a * s1 * d_dndotx_dqdot1_dq1 - radius_b * c1 * s0 * d_dndoty_dqdot1_dq1 + radius_c * c0 * c1 * d_dndotz_dqdot1_dq1);
+            * (dndotx_dqdot1 * radius_x * c1 + dndoty_dqdot1 * radius_y * s0 * s1 - dndotz_dqdot1 * radius_z * c0 * s1 + radius_x * s1 * d_dndotx_dqdot1_dq1 - radius_y * c1 * s0 * d_dndoty_dqdot1_dq1 + radius_z * c0 * c1 * d_dndotz_dqdot1_dq1);
 
       // Angular part (rows 4-6)
       Sdot_41 = -(qdot1 * c2 * s1 + qdot2 * c1 * s2);
