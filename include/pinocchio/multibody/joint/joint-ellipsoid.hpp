@@ -93,7 +93,7 @@ namespace pinocchio
     {
       EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(Vector3Like, 3);
       // Compute first 6 rows from first 2 columns
-      Eigen::Matrix<Scalar, 6, 1> result = S.template block<6, 2>(0, 0) * v.template segment<2>(0);
+      Eigen::Matrix<Scalar, 6, 1> result = S.template leftCols<2>() * v.template head<2>();
 
       // Add contribution from last column (only row 5 is non-zero: S(5,2) = 1)
       result[5] += v[2];
