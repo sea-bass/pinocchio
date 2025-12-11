@@ -64,6 +64,10 @@ namespace pinocchio {
        - \subpage md_doc_d-practical-exercises_7-learn
   */
 
+  /** \page md_doc_e-dev_intro Development
+       - \subpage md_doc_e-dev_impl-new-joint
+  */
+
   //
   // Modules organization
   //

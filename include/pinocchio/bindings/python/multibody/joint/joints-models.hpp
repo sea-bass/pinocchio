@@ -247,6 +247,27 @@ namespace pinocchio
         .def_readwrite("pitch", &context::JointModelHZ::m_pitch, "Pitch h of the JointModelHZ.");
     }
 
+    // specialization for JointModelHelical
+    template<>
+    bp::class_<context::JointModelEllipsoid> &
+    expose_joint_model<context::JointModelEllipsoid>(bp::class_<context::JointModelEllipsoid> & cl)
+    {
+      return cl
+        .def(bp::init<context::Scalar, context::Scalar, context::Scalar>(
+          bp::args("self", "radius_x", "radius_y", "radius_z"),
+          "Init JointModelEllipsoid with radii along x, y, z axes."))
+        .def(bp::init<>(bp::args("self"), "Init JointModelEllipsoid with default radii equal to 0"))
+        .def_readwrite(
+          "radius_x", &context::JointModelEllipsoid::radius_x,
+          "Radius of the JointModelEllipsoid along X axis.")
+        .def_readwrite(
+          "radius_y", &context::JointModelEllipsoid::radius_y,
+          "Radius of the JointModelEllipsoid along Y axis.")
+        .def_readwrite(
+          "radius_z", &context::JointModelEllipsoid::radius_z,
+          "Radius of the JointModelEllipsoid along Z axis.");
+    }
+
     // specialization for JointModelUniversal
     template<>
     bp::class_<context::JointModelUniversal> &
