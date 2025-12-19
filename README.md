@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://opensource.org/licenses/BSD-2-Clause"><img src="https://img.shields.io/badge/License-BSD%202--Clause-green.svg" alt="License"/></a>
   <a href="https://gepettoweb.laas.fr/doc/stack-of-tasks/pinocchio/devel/doxygen-html/"><img src="https://img.shields.io/badge/docs-online-brightgreen" alt="Documentation"/></a>
+  <a href="https://deepwiki.com/stack-of-tasks/pinocchio"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"/></a>
   <a href="http://projects.laas.fr/gepetto/doc/stack-of-tasks/pinocchio/devel/coverage/"><img src="https://gepgitlab.laas.fr/stack-of-tasks/pinocchio/badges/devel/coverage.svg?job=doc-coverage" alt="Coverage Report"/></a>
   <a href="https://anaconda.org/conda-forge/pinocchio"><img src="https://img.shields.io/conda/dn/conda-forge/pinocchio.svg" alt="Conda Downloads"/></a>
   <a href="https://anaconda.org/conda-forge/pinocchio"><img src="https://img.shields.io/conda/vn/conda-forge/pinocchio.svg" alt="Conda Version"/></a>
@@ -22,12 +23,12 @@
 **Pinocchio** instantiates the state-of-the-art Rigid Body Algorithms for poly-articulated systems based on revisited Roy Featherstone's algorithms.
 Besides, **Pinocchio** provides the analytical derivatives of the main Rigid-Body Algorithms, such as the Recursive Newton-Euler Algorithm or the Articulated-Body Algorithm.
 
-**Pinocchio** was first tailored for robotics applications, but it can be used in other contexts (biomechanics, computer graphics, vision, etc.).
-It is built upon Eigen for linear algebra and FCL for collision detection. **Pinocchio** comes with a Python interface for fast code prototyping, [directly accessible](https://github.com/conda-forge/pinocchio-feedstock#installing-pinocchio) through [Conda](https://docs.conda.io/en/latest/).
+**Pinocchio** was originally designed for robotics applications, but it can be used in other contexts (biomechanics, computer graphics, vision, etc.).
+It is built upon Eigen for linear algebra and FCL for collision detection. **Pinocchio** includes a Python interface for fast code prototyping, [directly accessible](https://github.com/conda-forge/pinocchio-feedstock#installing-pinocchio) through [Conda](https://docs.conda.io/en/latest/).
 
-**Pinocchio** is now at the heart of various robotics software as [Crocoddyl](https://github.com/loco-3d/crocoddyl/tree/devel), an open-source and efficient Differential Dynamic Programming solver for robotics, the [Stack-of-Tasks](http://stack-of-tasks.github.io), an open-source and versatile hierarchical controller framework or the [Humanoid Path Planner](https://humanoid-path-planner.github.io/hpp-doc), open-source software for Motion and Manipulation Planning.
+**Pinocchio** is now at the heart of various robotics software as [Crocoddyl](https://github.com/loco-3d/crocoddyl/tree/devel), an open-source and efficient Differential Dynamic Programming solver for robotics, the [Stack-of-Tasks](http://stack-of-tasks.github.io), an open-source and versatile hierarchical controller framework, or the [Humanoid Path Planner](https://humanoid-path-planner.github.io/hpp-doc), open-source software for Motion and Manipulation Planning.
 
-If you want to learn more about **Pinocchio** internal behaviors and main features, we invite you to read the related [paper](https://hal-laas.archives-ouvertes.fr/hal-01866228) and the online [documentation](https://gepettoweb.laas.fr/doc/stack-of-tasks/pinocchio/devel/doxygen-html/).
+If you want to learn more about **Pinocchio** internal behaviors and main features, we invite you to read the related [paper](https://hal-laas.archives-ouvertes.fr/hal-01866228) and the online [documentation](https://gepettoweb.laas.fr/doc/stack-of-tasks/pinocchio/devel/doxygen-html/) or [DeepWiki](https://deepwiki.com/stack-of-tasks/pinocchio).
 
 If you want to dive into **Pinocchio** directly, only one single line is sufficient (assuming you have Conda):
 
