@@ -23,6 +23,11 @@ else:
 MESH_TYPES = (coal.BVHModelBase, coal.HeightFieldOBBRSS, coal.HeightFieldAABB)
 
 
+def _opacity(color):
+    """Viser renders any mesh with an explicit opacity in the transparent pass."""
+    return None if color[3] >= 1.0 else color[3]
+
+
 class ViserVisualizer(BaseVisualizer):
     """A Pinocchio visualizer using Viser."""
 
@@ -178,14 +183,14 @@ class ViserVisualizer(BaseVisualizer):
                 name,
                 dimensions=geom.halfSide * 2.0,
                 color=color_override[:3],
-                opacity=color_override[3],
+                opacity=_opacity(color_override),
             )
         elif isinstance(geom, coal.Sphere):
             frame = self.viewer.scene.add_icosphere(
                 name,
                 radius=geom.radius,
                 color=color_override[:3],
-                opacity=color_override[3],
+                opacity=_opacity(color_override),
             )
         elif isinstance(geom, coal.Cylinder):
             mesh = trimesh.creation.cylinder(
@@ -197,7 +202,7 @@ class ViserVisualizer(BaseVisualizer):
                 mesh.vertices,
                 mesh.faces,
                 color=color_override[:3],
-                opacity=color_override[3],
+                opacity=_opacity(color_override),
             )
         elif isinstance(geom, MESH_TYPES):
             frame = self._add_mesh_from_path(
@@ -238,7 +243,7 @@ class ViserVisualizer(BaseVisualizer):
                 mesh.vertices,
                 mesh.faces,
                 color=color[:3],
-                opacity=color[3],
+                opacity=_opacity(color),
             )
 
     def _add_mesh_from_convex(self, name, geom, color):
@@ -261,7 +266,7 @@ class ViserVisualizer(BaseVisualizer):
             vertices,
             faces,
             color=color[:3],
-            opacity=color[3],
+            opacity=_opacity(color),
         )
 
     def display(self, q=None):
